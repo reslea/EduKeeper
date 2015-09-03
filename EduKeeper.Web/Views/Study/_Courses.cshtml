@@ -1,0 +1,17 @@
+﻿@using EduKeeper.Web.Models;
+@model List<CourseModel>
+
+
+<div id="courses">
+    @foreach (CourseModel course in Model)
+    {
+        <div>
+            <div class="navbar-link">
+                <a href="@Url.Action("Course", "Study", new { courseId = course.Id })">@course.Title</a>
+            </div>
+
+            <div class=" description">@course.Description</div>
+        </div>
+    }
+    <hr />
+</div>

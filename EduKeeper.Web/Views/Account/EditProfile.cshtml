@@ -1,0 +1,137 @@
+﻿@using EduKeeper.Web.Models;
+@using System.Web.Mvc;
+@model UserModel
+@{
+    ViewBag.Title = "EditProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { id = "editForm", enctype = "multipart/form-data" }))
+{
+
+
+    <div class="table-wrapper">
+        <table id="userDataFields" align="center">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <h1>Edit Profile</h1>
+                    </th>
+                </tr>
+            </thead>
+
+            @*Field 1*@
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(u => u.FirstName)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">First Name:</td>
+                <td>
+                    <div class="model-values">@Html.TextBoxFor(u => u.FirstName, new { @class = "form-control" })</div>
+                </td>
+                <td rowspan="60" class="avatar">
+                    <div class="picture">
+
+                        <img src="@(Model.Id != 0 ? Url.Content("~/UsersContent/" + Model.Id.ToString()) + ".jpg"
+                                    : Url.Content("~/UsersContent/index.gif"))"
+                             alt="Profile" />
+
+                        <div id="under-picture">
+                            <input type="file" name="pictureToUpdate" id="pictureToUpdate" />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            @*Field 2*@
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(u => u.LastName)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Last Name:</td>
+                <td>
+                    <div class="model-values">@Html.TextBoxFor(u => u.LastName, new { @class = "form-control" })</div>
+                </td>
+            </tr>
+
+            @*Field 3*@
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(u => u.Email)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Email:</td>
+                <td>
+                    <div class="model-values">@Html.TextBoxFor(u => u.Email, new { @class = "form-control" })</div>
+                </td>
+            </tr>
+
+            @*Field 4*@
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(u => u.Age)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Age:</td>
+                <td>
+                    <div class="model-values">@Html.TextBoxFor(u => u.Age, new { @class = "form-control" })</div>
+                </td>
+            </tr>
+
+            @*Field 5*@
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(u => u.GroupId)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Group:</td>
+                <td>
+                    <div class="model-values">
+                        @(Html.DropDownListFor(u => u.GroupId, new List<SelectListItem>()
+                        {
+                            new SelectListItem() { Text = "My great group", Value = "1"}
+                        }, new { @class = "form-control" }))
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(u => u.Sex)</div>
+                </td>
+            </tr>
+            <tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">
+                        @(Html.DropDownListFor(u => u.Sex, new List<SelectListItem>()
+                        {
+                            new SelectListItem() { Text = "Male", Value = "True", Selected = true},
+                            new SelectListItem() { Text = "Female", Value = "False"}
+                        }, new { @class = "form-control" }))
+                    </div>
+                </td>
+            </tr>
+
+            <tfoot>
+                <tr>
+                    <td colspan="2" align="center">
+                        <div><input class="btn btn-lg btn-primary btn-block" id="buttonSubmit" type="submit" value="Save changes" /></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
