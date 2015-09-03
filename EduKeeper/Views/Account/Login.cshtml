@@ -1,0 +1,58 @@
+﻿@using EduKeeper.Models;
+@model LoginModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "loginForm" }))
+{
+    <div class="table-wrapper">
+        <table id="userDataFields" align="center">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <h1>Log in</h1>
+                    </th>
+                </tr>
+            </thead>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(l => l.Email)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Email:</td>
+                <td>
+                    <div class="model-values"> @Html.TextBoxFor(l => l.Email, new { @class = "form-control" })</div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="validation">@Html.ValidationMessageFor(l => l.Password)</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Password:</td>
+                <td>
+                    <div class="model-values">@Html.PasswordFor(l => l.Password, new { @class = "form-control" }) </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="info">Remember me:</td>
+                <td>
+                    <div class="model-values"> @Html.CheckBoxFor(l => l.RememberMe, new { @class = "form-control", @id = "rememberMe"}) </div>
+                </td>
+            </tr>
+            <tfoot>
+                <tr>
+                    <td colspan="2" align="center">
+                        <div><input class="btn btn-lg btn-primary btn-block" id="buttonSubmit" type="submit" value="Log in" /></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}

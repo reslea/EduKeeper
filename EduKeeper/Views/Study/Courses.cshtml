@@ -1,0 +1,30 @@
+﻿@using EduKeeper.Models;
+@model List<CourseModel>
+@{
+    ViewBag.Title = "Courses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Courses</h2>
+
+
+@using (Ajax.BeginForm(new AjaxOptions
+                    {
+                        HttpMethod = "post",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "courses"
+                    }))
+{
+    <div class="model-values" style="align-items:flex-start">
+        <input type="search" name="searchTerm" class="form-control" />
+        <input type="submit" value="Search" />
+    </div>
+}
+@Html.Partial("_Courses", Model)
+
+
+<div class="navbar-link">
+    <a href="@Url.Action("AddCourse")">
+        <input class="btn btn-lg btn-primary btn-block" id="backToCourses" type="submit" value="Add new course" />
+    </a>
+</div>
