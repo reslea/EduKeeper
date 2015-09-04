@@ -1,4 +1,4 @@
-﻿using EduKeeper.App_Start;
+﻿using EduKeeper;
 using EduKeeper.Web;
 using System;
 using System.Web.Http;

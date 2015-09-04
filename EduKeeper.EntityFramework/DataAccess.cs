@@ -4,6 +4,7 @@ using System.Linq;
 using EduKeeper.Entities;
 using EduKeeper.Infrastructure;
 using System.Collections.Generic;
+using PagedList;
 
 namespace EduKeeper.EntityFramework
 {
@@ -83,11 +84,25 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public List<Course> GetCourses()
+        public IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1, int pageSize = 10)
         {
             using (var context = new EduKeeperContext())
             {
-                return context.Courses.ToList();
+                if (String.IsNullOrEmpty(searchTerm))
+                {
+                    return context.Courses
+                        .OrderBy(c => c.Id)
+                        .ToPagedList(pageNumber, pageSize);
+                }
+                else
+                {
+                    return context.Courses
+                        .Where(c => c.Description.ToLower().Contains(searchTerm.ToLower()) ||
+                            c.Title.ToLower().Contains(searchTerm.ToLower()))
+
+                            .OrderBy(c => c.Id)
+                            .ToPagedList(pageNumber, pageSize);
+                }
             }
         }
 
@@ -128,7 +143,6 @@ namespace EduKeeper.EntityFramework
                 Course course = context.Courses.SingleOrDefault(c => c.Id == courseId);
                 User user = context.Users.SingleOrDefault(u => u.Id == userId);
                 course.Users.Add(user);
-                user.Courses.Add(course);
                 context.SaveChanges();
             }
         }
@@ -142,6 +156,29 @@ namespace EduKeeper.EntityFramework
                 course.Users.Remove(user);
                 user.Courses.Remove(course);
                 context.SaveChanges();
+            }
+        }
+
+
+        public User GetUser(int id)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Users.Single(u => u.Id == id);
+            }
+        }
+
+        public List<LabelWrapper> AutocompleteCourse(string term)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Courses
+                    .Where(c => c.Title.StartsWith(term))
+                    .Take(10)
+                    .Select(c => new LabelWrapper
+                    {
+                        label = c.Title
+                    }).ToList();
             }
         }
     }

@@ -1,0 +1,11 @@
+﻿@model CourseModel
+@{
+    ViewBag.Title = "Course";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Course</h2>
+@Model.Title
+@Model.Description
+
+@Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Id}, new { @class = "btn btn-lg btn-primary btn-block" })

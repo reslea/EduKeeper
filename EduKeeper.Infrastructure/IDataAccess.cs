@@ -1,5 +1,7 @@
 ﻿using EduKeeper.Entities;
 using System.Collections.Generic;
+using PagedList;
+using System.Linq;
 
 namespace EduKeeper.Infrastructure
 {
@@ -12,12 +14,8 @@ namespace EduKeeper.Infrastructure
         /// <returns>true if user is registered, false if email is duplicated</returns>
         bool RegistrateUser(User user);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
-        /// <returns>registered user Id or null if login data is invalid</returns>
+        User GetUser(int id);
+        
         User AuthenticateUser(string email);
 
         User AuthenticateUser(string email, string password);
@@ -26,7 +24,7 @@ namespace EduKeeper.Infrastructure
 
         void LogError(Error error);
 
-        List<Course> GetCourses();
+        IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1, int pageSize = 10);
 
         void AddCourse(int ownerId, string title, string description);
 
@@ -35,5 +33,7 @@ namespace EduKeeper.Infrastructure
         void JoinCourse(int courseId, int userId);
 
         void LeaveCourse(int courseId, int userId);
+
+        List<LabelWrapper> AutocompleteCourse(string term);
     }
 }

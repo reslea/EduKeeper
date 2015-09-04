@@ -9,7 +9,8 @@ namespace EduKeeper.Web.Services.Interfaces
     public interface ICourseServices
     {
         void AddCourse(CourseModel model);
-        List<CourseModel> GetCourses();
+
+        CourseCollectionModel GetCourses(string searchTerm, int pageNumber = 1);
 
         CourseModel GetCourse(int id);
 

@@ -1,5 +1,6 @@
-﻿@using EduKeeper.Web.Models;
-@model List<CourseModel>
+﻿@using PagedList.Mvc;
+@using EduKeeper.Web.Models;
+@model CourseCollectionModel
 @{
     ViewBag.Title = "Courses";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,21 +11,21 @@
 
 @using (Ajax.BeginForm(new AjaxOptions
                     {
-                        HttpMethod = "post",
+                        HttpMethod = "get",
                         InsertionMode = InsertionMode.Replace,
                         UpdateTargetId = "courses"
                     }))
 {
-    <div class="model-values" style="align-items:flex-start">
-        <input type="search" name="searchTerm" class="form-control" />
-        <input type="submit" value="Search" />
+    <div class="model-values">
+        <input type="search" id="search" name="searchTerm" class="form-control"/>
+        <input type="submit" id="btnSearch" value="Search" class="btn btn-lg btn-default"   />
+    </div>
+    <div class="navbar-link">
+        <a href="@Url.Action("AddCourse")">
+            <input class="btn btn-lg btn-primary btn-block" id="addNewCourse" type="button" value="Add new course" />
+        </a>
     </div>
 }
+
+
 @Html.Partial("_Courses", Model)
-
-
-<div class="navbar-link">
-    <a href="@Url.Action("AddCourse")">
-        <input class="btn btn-lg btn-primary btn-block" id="backToCourses" type="submit" value="Add new course" />
-    </a>
-</div>

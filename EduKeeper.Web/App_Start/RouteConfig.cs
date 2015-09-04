@@ -16,7 +16,7 @@ namespace EduKeeper.Web
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Study", action = "AddCourse", id = UrlParameter.Optional }
+                defaults: new { controller = "Study", action = "Courses", id = UrlParameter.Optional }
             );
         }
     }

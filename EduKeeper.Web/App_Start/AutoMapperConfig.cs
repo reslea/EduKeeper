@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace EduKeeper.App_Start
+namespace EduKeeper.Web
 {
     public class AutoMapperConfig
     {

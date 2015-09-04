@@ -1,4 +1,5 @@
-﻿using EduKeeper.Web.Models;
+﻿using EduKeeper.Infrastructure;
+using EduKeeper.Web.Models;
 using EduKeeper.Web.Services;
 using EduKeeper.Web.Services.Interfaces;
 using System.Web.Mvc;
@@ -9,16 +10,18 @@ namespace EduKeeper.Web.Controllers
     public class StudyController : Controller
     {
         private ICourseServices courseServices;
+        private IDataAccess dataAccess;
 
-        public StudyController(ICourseServices courseServices)
+        public StudyController(ICourseServices courseServices, IDataAccess dataAccess)
         {
             this.courseServices = courseServices;
+            this.dataAccess = dataAccess;
         }
         // GET: Study
         [AllowAnonymous]
-        public ActionResult Courses()
+        public ActionResult Courses(string searchTerm, int pageNumber = 1)
         {
-            var courses = courseServices.GetCourses();
+            var courses = courseServices.GetCourses(searchTerm, pageNumber);
 
             if (Request.IsAjaxRequest())
             {
@@ -43,6 +46,25 @@ namespace EduKeeper.Web.Controllers
                 courseServices.AddCourse(model);
                 return RedirectToAction("Courses");
             }
+        }
+        [AllowAnonymous]
+        public ActionResult AutocompleteCourse(string term)
+        {
+            var model = dataAccess.AutocompleteCourse(term);
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Course(int courseId)
+        {
+            var model = courseServices.GetCourse(courseId);
+            return View(model);
+        }
+
+        public ActionResult JoinCourse(int courseId)
+        {
+            courseServices.JoinCourse(courseId);
+            return View();
         }
     }
 }
