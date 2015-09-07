@@ -19,5 +19,7 @@ namespace EduKeeper.Web.Services.Interfaces
         void LeaveCourse(int courseId);
 
         List<UserModel> GetCourseParticipants(int courseId);
+
+        PostCollectionModel GetPosts(int courseId, int pageNumber = 1);
     }
 }

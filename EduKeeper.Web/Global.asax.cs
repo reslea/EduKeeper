@@ -28,7 +28,7 @@ namespace EduKeeper
         {
             Exception exception = Server.GetLastError();
             System.Diagnostics.Debug.WriteLine(exception);
-            Response.Redirect("/Error");
+            Response.Redirect("/Account/Error");
         }
     }
 }

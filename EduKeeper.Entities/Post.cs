@@ -13,6 +13,9 @@ namespace EduKeeper.Entities
         [Required]
         public User Author { get; set; }
 
+        [Required]
+        public Course Course {get; set;}
+
         public virtual ICollection<Comment> Comments { get; set; }
 
         public virtual ICollection<File> Files { get; set; }

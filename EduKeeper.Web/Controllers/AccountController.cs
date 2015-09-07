@@ -42,7 +42,7 @@ namespace EduKeeper.Web.Controllers
                 {
                     SessionWrapper.Current.User = model;
                     userServices.AddAuthCookieToResponse(model);
-                    return RedirectToAction("EditProfile");
+                    return RedirectToAction("Courses");
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace EduKeeper.Web.Controllers
             {
                 SessionWrapper.Current.User = user;
                 userServices.AddAuthCookieToResponse(model);
-                return RedirectToAction("EditProfile");
+                return RedirectToAction("Courses", "Study");
             }
 
             return RedirectToAction("Error", new { errorCase = ErrorCase.InvalidUserData });
@@ -79,13 +79,14 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult EditProfile()
         {
-            var user = SessionWrapper.Current.User;
+            var user = userServices.GetUserFromCookie();
             return View(user);
         }
 
         [HttpPost]
         public ActionResult EditProfile(UserModel model)
         {
+            model.Id = SessionWrapper.Current.User.Id;
             userServices.ChangePicture(model.PictureToUpdate);
             
             var updatedUser = userServices.UpdateUser(model);

@@ -1,11 +1,18 @@
-﻿@model CourseModel
+﻿@model PostCollectionModel
 @{
     ViewBag.Title = "Course";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Course</h2>
-@Model.Title
-@Model.Description
-
+<ul>
+    @foreach (var item in Model.Posts)
+    {
+        <li>
+            <div>@item.Message</div>
+            <div>@item.Author.FirstName</div>
+            <div>@item.Author.Id</div>
+        </li>
+    }
+</ul>
 @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Id}, new { @class = "btn btn-lg btn-primary btn-block" })

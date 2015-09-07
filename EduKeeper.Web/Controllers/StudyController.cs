@@ -57,7 +57,7 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult Course(int courseId)
         {
-            var model = courseServices.GetCourse(courseId);
+            var model = courseServices.GetPosts(courseId);
             return View(model);
         }
 

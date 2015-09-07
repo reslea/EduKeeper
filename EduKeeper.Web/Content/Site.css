@@ -1,6 +1,5 @@
 ﻿body {
     font-size: 3em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
     color: #232323;
     background-color: azure;
 }
@@ -53,7 +52,7 @@ textarea {
 }
 
 .validation-summary-errors {
-    font-weight: bold;
+    font-size: 1em;
     color: #f00;
 }
 
@@ -65,17 +64,17 @@ textarea {
     margin: 20px auto;
 }
 
-    #userDataFields td {
-        font-size: 25px;
-    }
+#userDataFields h1 {
+    font-size: 50px;
+}
 
-    #userDataFields h1 {
-        font-size: 50px;
-    }
+#userDataFields .form-control {
+    font-size: 25px;
+}
 
-    #userDataFields .form-control {
-        font-size: 25px;
-    }
+#userDataFields input{
+    margin: 5px 0px;
+}
 
 .validation {
     min-height: 20px;
@@ -225,7 +224,7 @@ td.action {
 }
 
 #btnSearch {
-    margin: 10px;
+    margin: 10px 10px 10px 0px;
     float: left;
 }
 

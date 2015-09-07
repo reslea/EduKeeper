@@ -24,7 +24,7 @@ namespace EduKeeper.Infrastructure
 
         void LogError(Error error);
 
-        IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1, int pageSize = 10);
+        IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1);
 
         void AddCourse(int ownerId, string title, string description);
 
@@ -35,5 +35,7 @@ namespace EduKeeper.Infrastructure
         void LeaveCourse(int courseId, int userId);
 
         List<LabelWrapper> AutocompleteCourse(string term);
+
+        IPagedList<Post> GetPosts(int courseId, int pageNumber = 1);
     }
 }

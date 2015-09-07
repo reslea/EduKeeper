@@ -12,12 +12,10 @@
                         <a href="@Url.Action("Course", "Study", new { courseId = Model.Courses[i].Id })">@Model.Courses[i].Title</a>
                     </div>
                 </td>
-                <td class="description">
-                    <div class="description">@Model.Courses[i].Description</div>
+                <td class="description">@Model.Courses[i].Description</td>
                     @*<a href="@Url.Action("User", new { id = Model.Courses[i].Owner.Id })">
                         <div>Owner: @String.Format("{0} {1}", Model.Courses[i].Owner.FirstName, Model.Courses[i].Owner.LastName)</div>
                         </a>*@
-                </td>
                 <td class="action">
                     <div>
                         @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Courses[i].Id }, new { @class = "btn btn-lg btn-info" })

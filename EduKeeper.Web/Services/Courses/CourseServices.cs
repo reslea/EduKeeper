@@ -61,5 +61,17 @@ namespace EduKeeper.Web.Services.Courses
                 PageCount = pageCount
             };
         }
+
+        public PostCollectionModel GetPosts(int courseId, int pageNumber = 1)
+        {
+            var posts = dataAccess.GetPosts(courseId, pageNumber);
+            int pageCount = posts.PageCount;
+
+            return new PostCollectionModel
+            {
+                Posts = posts,
+                PageCount = pageCount
+            };
+        }
     }
 }

@@ -5,6 +5,7 @@ using EduKeeper.Entities;
 using EduKeeper.Infrastructure;
 using System.Collections.Generic;
 using PagedList;
+using System.Data.Entity;
 
 namespace EduKeeper.EntityFramework
 {
@@ -67,7 +68,7 @@ namespace EduKeeper.EntityFramework
                 result.Email = user.Email;
                 result.FirstName = user.FirstName;
                 result.LastName = user.LastName;
-                result.Sex = user.Sex; 
+                result.Sex = user.Sex;
 
                 context.SaveChanges();
             }
@@ -84,7 +85,7 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1, int pageSize = 10)
+        public IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1)
         {
             using (var context = new EduKeeperContext())
             {
@@ -92,7 +93,7 @@ namespace EduKeeper.EntityFramework
                 {
                     return context.Courses
                         .OrderBy(c => c.Id)
-                        .ToPagedList(pageNumber, pageSize);
+                        .ToPagedList(pageNumber, 10);
                 }
                 else
                 {
@@ -101,7 +102,7 @@ namespace EduKeeper.EntityFramework
                             c.Title.ToLower().Contains(searchTerm.ToLower()))
 
                             .OrderBy(c => c.Id)
-                            .ToPagedList(pageNumber, pageSize);
+                            .ToPagedList(pageNumber, 10);
                 }
             }
         }
@@ -117,10 +118,10 @@ namespace EduKeeper.EntityFramework
 
                 var course = new Course()
                 {
-                     Owner = user,
-                     Title = title,
-                     Description = description,
-                     Users = users
+                    Owner = user,
+                    Title = title,
+                    Description = description,
+                    Users = users
                 };
 
                 context.Courses.Add(course);
@@ -179,6 +180,14 @@ namespace EduKeeper.EntityFramework
                     {
                         label = c.Title
                     }).ToList();
+            }
+        }
+
+        public IPagedList<Post> GetPosts(int courseId, int pageNumber = 1)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Posts.Where(p => p.Course.Id == courseId).Include(u => u.Author).ToPagedList(pageNumber, 10);
             }
         }
     }

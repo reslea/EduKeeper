@@ -3,14 +3,14 @@ namespace EduKeeper.Infrastructure
 {
     public enum ErrorCase
     {
-        [ErrorDescriptionAttribute("Owner not found")]
+        [ErrorDescriptionAttribute("User not found")]
         UserNotFound,
 
 
         [ErrorDescriptionAttribute("Invalid email or password")]
         InvalidUserData,
 
-        [ErrorDescriptionAttribute("Owner with this userEmail is already exist")]
+        [ErrorDescriptionAttribute("User with this userEmail is already exist")]
         DuplicateEmail,
 
         [ErrorDescriptionAttribute("Unauthorized access")]
