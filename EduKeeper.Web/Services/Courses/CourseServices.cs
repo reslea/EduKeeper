@@ -64,14 +64,22 @@ namespace EduKeeper.Web.Services.Courses
 
         public PostCollectionModel GetPosts(int courseId, int pageNumber = 1)
         {
-            var posts = dataAccess.GetPosts(courseId, pageNumber);
+            int userId = SessionWrapper.Current.User.Id;
+            var posts = dataAccess.GetPosts(userId, courseId, pageNumber);
             int pageCount = posts.PageCount;
 
             return new PostCollectionModel
             {
+                CourseTitle = dataAccess.GetCourseTitle(courseId),
                 Posts = posts,
-                PageCount = pageCount
+                CourseId = courseId
             };
+        }
+
+        public void PostMessage(string message, int courseId)
+        { 
+            int userId = SessionWrapper.Current.User.Id;
+            dataAccess.PostMessage(message, courseId, userId);
         }
     }
 }

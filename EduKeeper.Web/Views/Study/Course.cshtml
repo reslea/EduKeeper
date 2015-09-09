@@ -3,16 +3,55 @@
     ViewBag.Title = "Course";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script>
 
-<h2>Course</h2>
-<ul>
-    @foreach (var item in Model.Posts)
-    {
-        <li>
-            <div>@item.Message</div>
-            <div>@item.Author.FirstName</div>
-            <div>@item.Author.Id</div>
-        </li>
-    }
-</ul>
-@Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Id}, new { @class = "btn btn-lg btn-primary btn-block" })
+    var pageNumber = 1;
+    var scroll = true;    
+
+    $(window).on('scroll', function () {
+        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+            getPage();
+        }
+    }).scroll();
+
+    function getPage() {
+
+        scroll = false;
+
+        var options = {
+            url: '@Url.Action("GetPosts")',            
+            type: "get",
+            data: {
+                pageNumber: pageNumber,
+                courseId: @Model.CourseId
+                }
+        };
+
+        jQuery.ajax(options).done(function (data) {
+            $("#posts").append(data);
+            alert(data);
+        });
+
+        return false;
+    };
+</script>
+<h2>@Model.CourseTitle</h2>
+<div class="col-xs-12 col-md-offset-2 col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-heading c-list">
+            <span class="title">Posts</span>
+        </div>
+        <div class="new-post">
+            @using (Ajax.BeginForm("PostMessage", "Study", new AjaxOptions { HttpMethod = "post", UpdateTargetId = "posts" }))
+            {
+                <input type="text" name="message" class="form-control" id="postMessage" />
+                <input type="hidden" name="courseId" value="@Model.CourseId" />
+                <input type="submit" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" />
+            }
+        </div>
+        @Html.Partial("_Posts", Model)
+    </div>
+</div>
+<div class=" col-xs-2">
+    @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.CourseId }, new { @class = "btn btn-lg btn-primary btn-block", id = "join" })
+</div>

@@ -1,12 +1,16 @@
 ﻿using EduKeeper.Entities;
+using EduKeeper.Infrastructure;
 using PagedList;
+using System.Collections.Generic;
 
 namespace EduKeeper.Web.Models
 {
     public class PostCollectionModel
     {
-        public int PageCount { get; set; }
+        public string CourseTitle { get; set; }
 
-        public IPagedList<Post> Posts { get; set; }
+        public int CourseId { get; set; }
+
+        public IPagedList<PostDTO> Posts { get; set; }
     }
 }

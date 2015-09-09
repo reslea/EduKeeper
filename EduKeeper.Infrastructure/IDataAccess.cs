@@ -36,6 +36,10 @@ namespace EduKeeper.Infrastructure
 
         List<LabelWrapper> AutocompleteCourse(string term);
 
-        IPagedList<Post> GetPosts(int courseId, int pageNumber = 1);
+        IPagedList<PostDTO> GetPosts(int userId, int courseId, int pageNumber = 1);
+
+        string GetCourseTitle(int courseId);
+
+        void PostMessage(string message, int courseId, int userId);
     }
 }

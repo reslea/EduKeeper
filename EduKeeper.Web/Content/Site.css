@@ -64,17 +64,17 @@ textarea {
     margin: 20px auto;
 }
 
-#userDataFields h1 {
-    font-size: 50px;
-}
+    #userDataFields h1 {
+        font-size: 50px;
+    }
 
-#userDataFields .form-control {
-    font-size: 25px;
-}
+    #userDataFields .form-control {
+        font-size: 25px;
+    }
 
-#userDataFields input{
-    margin: 5px 0px;
-}
+    #userDataFields input {
+        margin: 5px 0px;
+    }
 
 .validation {
     min-height: 20px;
@@ -111,8 +111,12 @@ td.info {
 
 .avatar {
     vertical-align: top;
+    height: 100%;
 }
 
+@media (max-width: 500px){
+
+}
 #under-picture {
     max-width: 200px;
     text-align: center;
@@ -197,7 +201,7 @@ div.description {
     margin: 10px;
 }
 
-#courses {
+#courses #coursesTable{
     width: 100%;
     table-layout: fixed;
 }
@@ -240,4 +244,31 @@ td.action {
 #courses hr {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+#posts {
+}
+
+    #posts .author {
+        vertical-align: central;
+        font-weight: bold;
+        font-size: 0.6em;
+    }
+
+    #posts .post {
+        font-size: 0.5em;
+        min-height: 30px;
+    }
+
+    #post .avatar {
+        height: 100%;
+    }
+
+    #posts .photo {
+
+        max-width: 50px;
+    }
+
+#btn-post {
+    margin: 5px;
 }

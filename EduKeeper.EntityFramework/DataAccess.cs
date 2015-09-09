@@ -6,6 +6,8 @@ using EduKeeper.Infrastructure;
 using System.Collections.Generic;
 using PagedList;
 using System.Data.Entity;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace EduKeeper.EntityFramework
 {
@@ -183,11 +185,52 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public IPagedList<Post> GetPosts(int courseId, int pageNumber = 1)
+        public IPagedList<PostDTO> GetPosts(int userId, int courseId, int pageNumber = 1)
+        {
+            Mapper.CreateMap<Post, PostDTO>()
+                .ForMember(d => d.AuthorName, opt => opt.MapFrom(p => p.Author.FirstName + " " + p.Author.LastName))
+                .ForMember(d => d.AuthorId, opt => opt.MapFrom(p => p.Author.Id))
+                .ForMember(d => d.CourseId, opt => opt.MapFrom(p => p.Course.Id))
+                .ForMember(d => d.Message, opt => opt.MapFrom(p => p.Message))
+                .ForMember(d => d.Id, opt => opt.MapFrom(p => p.Id));
+
+            using (var context = new EduKeeperContext())
+            {
+                if (context.Users.SingleOrDefault(u => u.Id == userId).Courses.Any(c => c.Id == courseId))
+                {
+                    return context.Posts.Where(p => p.Course.Id == courseId)
+                        .Include(u => u.Author)
+                        .OrderByDescending(p => p.Id) //it is needed for ToPagedList()
+                        .ProjectTo<PostDTO>()
+                        .ToPagedList(pageNumber, 10);
+                }
+                else return null;
+            }
+        }
+
+        public string GetCourseTitle(int courseId)
         {
             using (var context = new EduKeeperContext())
             {
-                return context.Posts.Where(p => p.Course.Id == courseId).Include(u => u.Author).ToPagedList(pageNumber, 10);
+                return context.Courses.Single(c => c.Id == courseId).Title;
+            }
+        }
+
+        public void PostMessage(string message, int courseId, int userId)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                var newPost = new Post
+                {
+                    Message = message,  
+                    AuthorId = userId,
+                    CourseId = courseId
+                };
+                if (context.Courses.Single(c => c.Id == courseId).Users.Any(u => u.Id == userId))
+                {
+                    context.Posts.Add(newPost);
+                    context.SaveChanges();
+                }
             }
         }
     }

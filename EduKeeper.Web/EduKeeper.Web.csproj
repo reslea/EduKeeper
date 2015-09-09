@@ -285,6 +285,7 @@
     <Content Include="Views\Study\_Courses.cshtml" />
     <Content Include="Views\Study\Course.cshtml" />
     <Content Include="Views\Study\JoinCourse.cshtml" />
+    <Content Include="Views\Study\_Posts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

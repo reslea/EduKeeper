@@ -11,10 +11,13 @@ namespace EduKeeper.Entities
         public string Message { get; set; }
 
         [Required]
+        public int AuthorId { get; set; }
+        [Required]
+        public int CourseId { get; set; }
+
         public User Author { get; set; }
 
-        [Required]
-        public Course Course {get; set;}
+        public Course Course { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
 

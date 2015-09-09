@@ -21,5 +21,7 @@ namespace EduKeeper.Web.Services.Interfaces
         List<UserModel> GetCourseParticipants(int courseId);
 
         PostCollectionModel GetPosts(int courseId, int pageNumber = 1);
+
+        void PostMessage(string message, int courseId);
     }
 }

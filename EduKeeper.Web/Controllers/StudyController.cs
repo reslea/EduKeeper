@@ -55,6 +55,17 @@ namespace EduKeeper.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetPosts(int courseId, int pageNumber = 1)
+        {
+            int userId = SessionWrapper.Current.User.Id;
+            var posts = new PostCollectionModel()
+            {
+                CourseId = courseId,
+                Posts = dataAccess.GetPosts(userId, courseId, pageNumber)
+            };
+            return Json(posts, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Course(int courseId)
         {
             var model = courseServices.GetPosts(courseId);
@@ -65,6 +76,19 @@ namespace EduKeeper.Web.Controllers
         {
             courseServices.JoinCourse(courseId);
             return View();
+        }
+        [HttpPost]
+        public ActionResult PostMessage(string message, int courseId, int pageNumber)
+        {
+            int userId = SessionWrapper.Current.User.Id;
+            courseServices.PostMessage(message, courseId);
+            var posts = new PostCollectionModel()
+            {
+                CourseId = courseId,
+                Posts = dataAccess.GetPosts(userId, courseId, pageNumber)
+            };
+
+            return PartialView("_posts", posts);
         }
     }
 }
