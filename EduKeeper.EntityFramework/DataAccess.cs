@@ -15,6 +15,7 @@ namespace EduKeeper.EntityFramework
     {
         public bool RegistrateUser(User user)
         {
+            user.GroupId = 201;
             using (var context = new EduKeeperContext())
             {
                 user.RegDate = DateTime.Now;
@@ -27,12 +28,8 @@ namespace EduKeeper.EntityFramework
                 {
                     return false;
                 }
-                try
-                {
-                    context.SaveChanges();
-                    return true;
-                }
-                catch (DbUpdateException) { return false; }
+                context.SaveChanges();
+                return true;
             }
         }
 
@@ -113,7 +110,7 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
-                User user = context.Users.SingleOrDefault(u => u.Id == ownerId);
+                User user = context.Users.Single(u => u.Id == ownerId);
 
                 var users = new List<User>();
                 users.Add(user);
@@ -144,9 +141,13 @@ namespace EduKeeper.EntityFramework
             using (var context = new EduKeeperContext())
             {
                 Course course = context.Courses.SingleOrDefault(c => c.Id == courseId);
-                User user = context.Users.SingleOrDefault(u => u.Id == userId);
-                course.Users.Add(user);
-                context.SaveChanges();
+                User user = context.Users.Single(u => u.Id == userId);
+
+                if (course != null)
+                {
+                    course.Users.Add(user);
+                    context.SaveChanges();
+                }
             }
         }
 
@@ -155,21 +156,23 @@ namespace EduKeeper.EntityFramework
             using (var context = new EduKeeperContext())
             {
                 Course course = context.Courses.SingleOrDefault(c => c.Id == courseId);
-                User user = context.Users.SingleOrDefault(u => u.Id == userId);
-                course.Users.Remove(user);
-                user.Courses.Remove(course);
-                context.SaveChanges();
+                User user = context.Users.Single(u => u.Id == userId);
+
+                if (course != null)
+                {
+                    course.Users.Remove(user);
+                    context.SaveChanges();
+                }
             }
         }
 
-
-        public User GetUser(int id)
-        {
-            using (var context = new EduKeeperContext())
-            {
-                return context.Users.Single(u => u.Id == id);
-            }
-        }
+        //public User GetUser(int id)
+        //{
+        //    using (var context = new EduKeeperContext())
+        //    {
+        //        return context.Users.Single(u => u.Id == id);
+        //    }
+        //}
 
         public List<LabelWrapper> AutocompleteCourse(string term)
         {
@@ -187,22 +190,43 @@ namespace EduKeeper.EntityFramework
 
         public IPagedList<PostDTO> GetPosts(int userId, int courseId, int pageNumber = 1)
         {
-            Mapper.CreateMap<Post, PostDTO>()
-                .ForMember(d => d.AuthorName, opt => opt.MapFrom(p => p.Author.FirstName + " " + p.Author.LastName))
-                .ForMember(d => d.AuthorId, opt => opt.MapFrom(p => p.Author.Id))
-                .ForMember(d => d.CourseId, opt => opt.MapFrom(p => p.Course.Id))
-                .ForMember(d => d.Message, opt => opt.MapFrom(p => p.Message))
-                .ForMember(d => d.Id, opt => opt.MapFrom(p => p.Id));
-
             using (var context = new EduKeeperContext())
             {
-                if (context.Users.SingleOrDefault(u => u.Id == userId).Courses.Any(c => c.Id == courseId))
+                if (context.Users.Any(user => user.Id == userId &&
+                    user.Courses.Any(course => course.Id == courseId)))
                 {
-                    return context.Posts.Where(p => p.Course.Id == courseId)
-                        .Include(u => u.Author)
-                        .OrderByDescending(p => p.Id) //it is needed for ToPagedList()
+                    var posts = context.Posts
+                        .Where(post => post.Course.Id == courseId)
+                        .Include(post => post.Author)
+                        .OrderByDescending(post => post.Id) //it is needed for ToPagedList()
                         .ProjectTo<PostDTO>()
-                        .ToPagedList(pageNumber, 10);
+                        .ToPagedList(pageNumber, 20);
+
+
+                    List<int> postIds = posts.Select(p => p.Id).ToList();
+
+                    if (posts.Count > 0)
+                    {
+                        var comments = context.Comments
+                            .Where(comment => postIds.Contains(comment.PostId))
+                            .Include(comment => comment.Author)
+                            .ProjectTo<CommentDTO>()
+                            .GroupBy(comment => comment.PostId, c => c)
+                            .Select(group => group.Take(20)
+                                .OrderByDescending(c => c.DateWritten)
+                                .ToList())
+                            .ToList();
+
+
+
+                        foreach (List<CommentDTO> item in comments)
+                        {
+                            posts.Single(p => p.Id == item.First().PostId)
+                                .Comments = item.ToList();
+                        }
+                    }
+
+                    return posts;
                 }
                 else return null;
             }
@@ -216,21 +240,36 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public void PostMessage(string message, int courseId, int userId)
+        public PostDTO PostMessage(string message, int courseId, int userId)
         {
             using (var context = new EduKeeperContext())
             {
                 var newPost = new Post
                 {
-                    Message = message,  
+                    Message = message,
                     AuthorId = userId,
-                    CourseId = courseId
+                    CourseId = courseId,
+                    DateWritten = DateTime.Now
                 };
                 if (context.Courses.Single(c => c.Id == courseId).Users.Any(u => u.Id == userId))
                 {
                     context.Posts.Add(newPost);
                     context.SaveChanges();
                 }
+
+                return Mapper.Map<PostDTO>(newPost);
+            }
+        }
+
+        public IPagedList<PostDTO> GetFeed(int userId, int pageNumber)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Posts
+                        .Where(post => post.Course.Users.Any(user => user.Id == userId))
+                        .OrderBy(post => post.DateWritten)
+                        .ProjectTo<PostDTO>()
+                        .ToPagedList(pageNumber, 20);
             }
         }
     }

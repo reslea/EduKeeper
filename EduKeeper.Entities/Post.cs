@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduKeeper.Entities
 {
@@ -10,14 +12,15 @@ namespace EduKeeper.Entities
 
         public string Message { get; set; }
 
-        [Required]
-        public int AuthorId { get; set; }
-        [Required]
+        public int? AuthorId { get; set; }
+
         public int CourseId { get; set; }
 
         public User Author { get; set; }
 
         public Course Course { get; set; }
+
+        public DateTime DateWritten { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
 

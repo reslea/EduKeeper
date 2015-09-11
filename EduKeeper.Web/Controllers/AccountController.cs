@@ -42,7 +42,7 @@ namespace EduKeeper.Web.Controllers
                 {
                     SessionWrapper.Current.User = model;
                     userServices.AddAuthCookieToResponse(model);
-                    return RedirectToAction("Courses");
+                    return RedirectToAction("Courses", "Study");
                 }
                 else
                 {

@@ -15,5 +15,8 @@ namespace EduKeeper.Infrastructure
 
         [ErrorDescriptionAttribute("Unauthorized access")]
         UnauthorizedAccess,
+
+        [ErrorDescriptionAttribute("Course doesn`t exist")]
+        CourseNotExist,
     }
 }

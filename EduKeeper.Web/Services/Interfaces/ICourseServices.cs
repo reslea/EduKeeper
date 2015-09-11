@@ -1,4 +1,5 @@
-﻿using EduKeeper.Web.Models;
+﻿using EduKeeper.Infrastructure;
+using EduKeeper.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,6 @@ namespace EduKeeper.Web.Services.Interfaces
 
         List<UserModel> GetCourseParticipants(int courseId);
 
-        PostCollectionModel GetPosts(int courseId, int pageNumber = 1);
-
-        void PostMessage(string message, int courseId);
+        PostDTO PostMessage(string message, int courseId);
     }
 }

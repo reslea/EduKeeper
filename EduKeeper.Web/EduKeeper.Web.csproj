@@ -179,6 +179,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\PagedList.css" />
+    <Content Include="Scripts\jquery.tmpl.js" />
+    <Content Include="Scripts\jquery.tmpl.min.js" />
     <Content Include="Scripts\site.js" />
     <Content Include="UsersContent\index.gif" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -285,7 +287,6 @@
     <Content Include="Views\Study\_Courses.cshtml" />
     <Content Include="Views\Study\Course.cshtml" />
     <Content Include="Views\Study\JoinCourse.cshtml" />
-    <Content Include="Views\Study\_Posts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

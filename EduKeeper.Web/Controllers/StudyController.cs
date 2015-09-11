@@ -58,18 +58,24 @@ namespace EduKeeper.Web.Controllers
         public ActionResult GetPosts(int courseId, int pageNumber = 1)
         {
             int userId = SessionWrapper.Current.User.Id;
+            string courseTitle = dataAccess.GetCourseTitle(courseId);
+
             var posts = new PostCollectionModel()
             {
                 CourseId = courseId,
-                Posts = dataAccess.GetPosts(userId, courseId, pageNumber)
+                Posts = dataAccess.GetPosts(userId, courseId, pageNumber),
+                CourseTitle = courseTitle
             };
-            return Json(posts, JsonRequestBehavior.AllowGet);
+            return Json(posts.Posts, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Course(int courseId)
         {
-            var model = courseServices.GetPosts(courseId);
-            return View(model);
+            var model = courseServices.GetCourse(courseId);
+            if (model != null)
+                return View(model);
+            else
+                return RedirectToAction("Error", "Account", new { ErrorCase.CourseNotExist });
         }
 
         public ActionResult JoinCourse(int courseId)
@@ -78,17 +84,13 @@ namespace EduKeeper.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult PostMessage(string message, int courseId, int pageNumber)
+        public ActionResult PostMessage(string message, int courseId, int pageNumber = 1)
         {
             int userId = SessionWrapper.Current.User.Id;
-            courseServices.PostMessage(message, courseId);
-            var posts = new PostCollectionModel()
-            {
-                CourseId = courseId,
-                Posts = dataAccess.GetPosts(userId, courseId, pageNumber)
-            };
+            
+            var post = courseServices.PostMessage(message, courseId);
 
-            return PartialView("_posts", posts);
+            return Json(post, JsonRequestBehavior.AllowGet);
         }
     }
 }

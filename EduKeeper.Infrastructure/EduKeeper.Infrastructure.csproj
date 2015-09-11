@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommentDTO.cs" />
     <Compile Include="ErrorCase.cs" />
     <Compile Include="ErrorDescriptionAttribute.cs" />
     <Compile Include="IDataAccess.cs" />

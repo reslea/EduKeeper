@@ -15,5 +15,7 @@ namespace EduKeeper.Infrastructure
         public int CourseId { get; set; }
 
         public string Message { get; set; }
+
+        public List<CommentDTO> Comments { get; set; }
     }
 }

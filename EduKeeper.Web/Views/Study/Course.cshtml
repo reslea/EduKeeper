@@ -1,12 +1,12 @@
-﻿@model PostCollectionModel
+﻿@model CourseModel
 @{
     ViewBag.Title = "Course";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script>
+<script id="Infinite-scroll" type="text/javascript">
 
     var pageNumber = 1;
-    var scroll = true;    
+    var scroll = true;
 
     $(window).on('scroll', function () {
         if ($(window).scrollTop() == $(document).height() - $(window).height()) {
@@ -19,39 +19,159 @@
         scroll = false;
 
         var options = {
-            url: '@Url.Action("GetPosts")',            
+            url: '@Url.Action("GetPosts")',
             type: "get",
             data: {
                 pageNumber: pageNumber,
-                courseId: @Model.CourseId
+                courseId: @Model.Id
                 }
         };
 
         jQuery.ajax(options).done(function (data) {
-            $("#posts").append(data);
-            alert(data);
+            $("#postsTemplate").tmpl(data).appendTo("#posts");
+            pageNumber++;
+            scroll = true;
         });
 
         return false;
+
     };
+
+    function getDate(jsonDateString){
+        var month = new Array();
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sept";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var date = new Date(parseInt(jsonDateString.replace('/Date(', '')));
+
+        var minutes = "";
+        if(date.getMinutes() < 10)
+            minutes = "0" + date.getMinutes();
+        else minutes = date.getMinutes();
+
+        return date.getDay() + " " + month[date.getMonth()] + " at " + date.getHours() + ":" + minutes;
+    };
+    
+    function postMessage(){
+        var options ={
+            url: '@Url.Action("PostMessage")',
+            type: "post",
+            data: {
+                message: $("#postMessage").val(),
+                courseId: @Model.Id
+            }
+        }
+
+        jQuery.ajax(options).done(function (data) {
+            $("#postsTemplate").tmpl(data).prependTo("#posts");
+            $("#postMessage").val("");
+
+        });
+    };
+        
 </script>
-<h2>@Model.CourseTitle</h2>
+
+<script id="postsTemplate" type="text/x-jquery-tmpl">
+    <li class="list-group-item">
+        @*<div>
+                ${Id}, //post Id
+            </div>*@
+        <div class="col-xs-12 col-sm-2 col-lg-2">
+            <div class="avatar">
+                <div>
+                    <img src="/UsersContent/${AuthorId}.jpg"
+                         alt="${AuthorName}"
+                         class="img-responsive photo" />
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="author">
+                ${AuthorName}
+            </div>
+            <div class="post">
+                ${Message}
+            </div>
+        </div>
+        <div>
+            <ul class="list-group comments">
+                {{if Comments != null}}
+                {{each Comments}}
+                <li class="list-group-item">
+                    <div class="col-xs-12 col-sm-2 col-lg-2">
+                        <div class="avatar">
+                            <div>
+                                <img src="/UsersContent/${$value.AuthorId}.jpg"
+                                     alt="${$value.AuthorName}"
+                                     class="img-responsive photo" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="comment-author">
+                            ${$value.AuthorName} <em>${getDate($value.DateWritten)}</em>
+                        </div>
+                        <div class="post">
+                            ${$value.Message}
+                        </div>
+                    </div>
+                </li>
+                {{/each}}
+                {{/if}}
+            </ul>
+            <div>
+                <input type="text" name="commentText" id=${Id} />
+                <input type="button" name="postComment" value="comment" onclick="postComment(${Id})" />
+            </div>
+        </div>
+        <div class="clearfix" />
+    </li>
+
+    @*<li class="list-group-item">
+            <div class="col-xs-12 col-sm-2 col-lg-2 avatar">
+                <img src=" '~/UsersContent/' + ${AuthorId} + '.jpg' "
+                     alt=" ${AuthorId} "
+                     class="img-responsive photo" />
+            </div>
+            <div>
+                <div class="author">
+                    ${AuthorName}
+                </div>
+                <div class="post">
+                    ${Message}
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </li>*@
+</script>
+
+<h2>@Model.Title</h2>
+
+<h5>@Model.Description</h5>
+
 <div class="col-xs-12 col-md-offset-2 col-md-8">
     <div class="panel panel-default">
         <div class="panel-heading c-list">
             <span class="title">Posts</span>
         </div>
         <div class="new-post">
-            @using (Ajax.BeginForm("PostMessage", "Study", new AjaxOptions { HttpMethod = "post", UpdateTargetId = "posts" }))
-            {
-                <input type="text" name="message" class="form-control" id="postMessage" />
-                <input type="hidden" name="courseId" value="@Model.CourseId" />
-                <input type="submit" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" />
-            }
+            <input type="text" name="message" class="form-control" id="postMessage" />
+            <input type="hidden" name="courseId" value="@Model.Id" />
+            <input type="button" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" onclick="postMessage()" />
         </div>
-        @Html.Partial("_Posts", Model)
+        <ul class="list-group" id="posts">
+        </ul>
     </div>
 </div>
 <div class=" col-xs-2">
-    @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.CourseId }, new { @class = "btn btn-lg btn-primary btn-block", id = "join" })
+    @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Id }, new { @class = "btn btn-lg btn-primary btn-block", id = "join" })
 </div>

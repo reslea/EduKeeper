@@ -27,6 +27,9 @@ namespace EduKeeper
         protected void Application_Error(object sender, EventArgs e)
         {
             Exception exception = Server.GetLastError();
+            if (exception.Message.Contains("__browserLink"))
+                return;
+
             System.Diagnostics.Debug.WriteLine(exception);
             Response.Redirect("/Account/Error");
         }

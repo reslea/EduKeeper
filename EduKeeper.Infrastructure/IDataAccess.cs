@@ -14,7 +14,7 @@ namespace EduKeeper.Infrastructure
         /// <returns>true if user is registered, false if email is duplicated</returns>
         bool RegistrateUser(User user);
 
-        User GetUser(int id);
+        //User GetUser(int id);
         
         User AuthenticateUser(string email);
 
@@ -40,6 +40,6 @@ namespace EduKeeper.Infrastructure
 
         string GetCourseTitle(int courseId);
 
-        void PostMessage(string message, int courseId, int userId);
+        PostDTO PostMessage(string message, int courseId, int userId);
     }
 }

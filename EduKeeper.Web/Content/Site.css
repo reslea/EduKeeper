@@ -269,6 +269,35 @@ td.action {
         max-width: 50px;
     }
 
+    #posts .content{
+        float:left;
+    }
+
 #btn-post {
     margin: 5px;
+}
+
+li#first-post {
+    list-style-type: none;
+}
+
+ul.comments{
+    margin-left: 100px;
+    margin-bottom: 0;
+}
+
+.comments > .list-group-item{
+    padding-left: 0;
+}
+
+.comment-author{
+        vertical-align: central;
+        font-size: 0.6em;
+}
+
+.comment-author, author{
+    margin-left: 10px;
+    font-weight: normal;
+    text-align: left;
+    font-size: small;
 }
