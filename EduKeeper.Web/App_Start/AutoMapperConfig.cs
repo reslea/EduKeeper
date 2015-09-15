@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using EduKeeper.Entities;
-using EduKeeper.Infrastructure;
+using EduKeeper.Infrastructure.DTO;
 using EduKeeper.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace EduKeeper.Web
 {
@@ -23,9 +19,6 @@ namespace EduKeeper.Web
                     .MapFrom(s => s.Author.FirstName + " " + s.Author.LastName))
 
                 .ForMember(d => d.AuthorId, opt => opt.MapFrom(s => s.Author.Id))
-                //.ForMember(d => d.CourseId, opt => opt.MapFrom(p => p.Course.Id))
-                //.ForMember(d => d.Message, opt => opt.MapFrom(p => p.Message))
-                //.ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(d => d.Comments, opt => opt.Ignore());
 
             Mapper.CreateMap<Comment, CommentDTO>()

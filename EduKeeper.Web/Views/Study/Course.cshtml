@@ -3,110 +3,11 @@
     ViewBag.Title = "Course";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script id="Infinite-scroll" type="text/javascript">
-
-    var pageNumber = 1;
-    var scroll = true;
-
-    $(window).on('scroll', function () {
-        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-            getPage();
-        }
-    }).scroll();
-
-    function getPage() {
-
-        scroll = false;
-
-        $("#load").show();
-
-        var options = {
-            url: '@Url.Action("GetPosts")',
-            type: "get",
-            data: {
-                pageNumber: pageNumber,
-                courseId: @Model.Id
-                }
-        };
-
-        jQuery.ajax(options).done(function (data) {
-            $("#postsTemplate").tmpl(data).appendTo("#posts");
-            pageNumber++;
-            scroll = true;
-            $("#load").hide();
-        });
-
-        return false;
-
-    };
-</script>
-
-<script type="text/javascript">
-
-    function getDate(jsonDateString){
-        var month = new Array();
-        month[0] = "Jan";
-        month[1] = "Feb";
-        month[2] = "Mar";
-        month[3] = "Apr";
-        month[4] = "May";
-        month[5] = "Jun";
-        month[6] = "Jul";
-        month[7] = "Aug";
-        month[8] = "Sept";
-        month[9] = "Oct";
-        month[10] = "Nov";
-        month[11] = "Dec";
-        var date = new Date(parseInt(jsonDateString.replace('/Date(', '')));
-
-        var minutes = "";
-        if(date.getMinutes() < 10)
-            minutes = "0" + date.getMinutes();
-        else minutes = date.getMinutes();
-
-        return date.getDay() + " " + month[date.getMonth()] + " at " + date.getHours() + ":" + minutes;
-    };
-
-    function createInputId(id){
-        return 'text'+id;
-    }
-
-    function postMessage(){
-        var options ={
-            url: '@Url.Action("PostMessage")',
-            type: "post",
-            data: {
-                message: $("#postMessage").val(),
-                courseId: @Model.Id
-                }
-        }
-
-        jQuery.ajax(options).done(function (data) {
-            $("#postsTemplate").tmpl(data).prependTo("#posts");
-            $("#postMessage").val("");
-
-        });
-    };
-
-    function postComment(id){
-        var options ={
-            url: '@Url.Action("PostComment")',
-            type: "post",
-            data: {
-                message: $("#text" + id).val(),
-                PostId: id
-            }
-        }
-
-        jQuery.ajax(options).done(function (data) {
-            $("#commentTemplate").tmpl(data).prependTo("#" + id);
-            $("#" + id).val("");
-
-        });
-    };
-
-</script>
-
+@section Scripts
+{
+    <script src="@Url.Content("~/Scripts/courseInfinite.js")"></script>
+    <script src="@Url.Content("~/Scripts/courseServices.js")"></script>
+}
 <script id="postsTemplate" type="text/x-jquery-tmpl">
     <li class="list-group-item">
         @*<div>
@@ -164,23 +65,6 @@
         </div>
         <div class="clearfix" />
     </li>
-
-    @*<li class="list-group-item">
-            <div class="col-xs-12 col-sm-2 col-lg-2 avatar">
-                <img src=" '~/UsersContent/' + ${AuthorId} + '.jpg' "
-                     alt=" ${AuthorId} "
-                     class="img-responsive photo" />
-            </div>
-            <div>
-                <div class="author">
-                    ${AuthorName}
-                </div>
-                <div class="post">
-                    ${Message}
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </li>*@
 </script>
 
 <script id="commentTemplate" type="text/x-jquery-tmpl">
@@ -216,7 +100,7 @@
         </div>
         <div class="new-post">
             <textarea class="form-control" id="postMessage"></textarea>
-            <input type="hidden" name="courseId" value="@Model.Id" />
+            <input type="hidden" name="courseId" id="courseId" value="@Model.Id" />
             <input type="button" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" onclick="postMessage()" />
         </div>
         <ul class="list-group" id="posts"></ul>

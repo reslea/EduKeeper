@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
-using EduKeeper.Entities;
 using EduKeeper.Infrastructure;
+using EduKeeper.Infrastructure.DTO;
 using EduKeeper.Web.Models;
 using EduKeeper.Web.Services.Interfaces;
-using PagedList;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace EduKeeper.Web.Services.Courses
+namespace EduKeeper.Web.Services
 {
     public class CourseServices : ICourseServices
     {

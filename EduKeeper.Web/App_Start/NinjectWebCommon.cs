@@ -15,7 +15,6 @@ namespace EduKeeper.Web.App_Start
     using EduKeeper.Web.Services;
     using EduKeeper.Infrastructure;
     using EduKeeper.EntityFramework;
-    using EduKeeper.Web.Services.Courses;
 
     public static class NinjectWebCommon 
     {

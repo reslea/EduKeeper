@@ -1,7 +1,5 @@
-﻿using EduKeeper.Entities;
-using EduKeeper.Infrastructure;
+﻿using EduKeeper.Infrastructure.DTO;
 using PagedList;
-using System.Collections.Generic;
 
 namespace EduKeeper.Web.Models
 {

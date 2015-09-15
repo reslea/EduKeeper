@@ -1,7 +1,7 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
 @using EduKeeper.Web.Models;
-@using EduKeeper.Infrastructure
+@using EduKeeper.Infrastructure.DTO
 @model IPagedList<CourseDTO>
 
 <div id="courses">
@@ -15,9 +15,6 @@
                     </div>
                 </td>
                 <td class="description">@Model[i].Description</td>
-                    @*<a href="@Url.Action("User", new { id = Model.Courses[i].Owner.Id })">
-                        <div>Owner: @String.Format("{0} {1}", Model.Courses[i].Owner.FirstName, Model.Courses[i].Owner.LastName)</div>
-                        </a>*@
                 <td class="action">
                     <div>
                         @if (Model[i].IsJoined)

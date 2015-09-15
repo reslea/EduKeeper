@@ -8,6 +8,7 @@ using PagedList;
 using System.Data.Entity;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using EduKeeper.Infrastructure.DTO;
 
 namespace EduKeeper.EntityFramework
 {
@@ -214,7 +215,7 @@ namespace EduKeeper.EntityFramework
 
                 List<int> postIds = posts.Select(p => p.Id).ToList();
 
-                if (posts.Count <= 0)
+                if (posts.Count == 0)
                     return null;
 
                 var comments = context.Comments

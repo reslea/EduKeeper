@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using PagedList;
 using System.Linq;
+using EduKeeper.Infrastructure.DTO;
 
 namespace EduKeeper.Infrastructure
 {

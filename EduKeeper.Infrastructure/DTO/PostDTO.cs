@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EduKeeper.Infrastructure
+namespace EduKeeper.Infrastructure.DTO
 {
     public class PostDTO
     {
