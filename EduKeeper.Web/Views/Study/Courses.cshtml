@@ -1,15 +1,14 @@
 ﻿@using PagedList.Mvc;
 @using EduKeeper.Web.Models;
-@model CourseCollectionModel
+@using PagedList;
+@using EduKeeper.Infrastructure;
+@model IPagedList<CourseDTO>
 @{
     ViewBag.Title = "Courses";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    @*@Scripts.Render("~/bundles/jqueryinf");*@
 }
 
 <h2>Courses</h2>
-
-
 
 @using (Ajax.BeginForm(new AjaxOptions
                     {

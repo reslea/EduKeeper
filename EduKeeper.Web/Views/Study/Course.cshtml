@@ -18,6 +18,8 @@
 
         scroll = false;
 
+        $("#load").show();
+
         var options = {
             url: '@Url.Action("GetPosts")',
             type: "get",
@@ -31,11 +33,15 @@
             $("#postsTemplate").tmpl(data).appendTo("#posts");
             pageNumber++;
             scroll = true;
+            $("#load").hide();
         });
 
         return false;
 
     };
+</script>
+
+<script type="text/javascript">
 
     function getDate(jsonDateString){
         var month = new Array();
@@ -60,7 +66,11 @@
 
         return date.getDay() + " " + month[date.getMonth()] + " at " + date.getHours() + ":" + minutes;
     };
-    
+
+    function createInputId(id){
+        return 'text'+id;
+    }
+
     function postMessage(){
         var options ={
             url: '@Url.Action("PostMessage")',
@@ -68,7 +78,7 @@
             data: {
                 message: $("#postMessage").val(),
                 courseId: @Model.Id
-            }
+                }
         }
 
         jQuery.ajax(options).done(function (data) {
@@ -77,7 +87,24 @@
 
         });
     };
-        
+
+    function postComment(id){
+        var options ={
+            url: '@Url.Action("PostComment")',
+            type: "post",
+            data: {
+                message: $("#text" + id).val(),
+                PostId: id
+            }
+        }
+
+        jQuery.ajax(options).done(function (data) {
+            $("#commentTemplate").tmpl(data).prependTo("#" + id);
+            $("#" + id).val("");
+
+        });
+    };
+
 </script>
 
 <script id="postsTemplate" type="text/x-jquery-tmpl">
@@ -103,7 +130,7 @@
             </div>
         </div>
         <div>
-            <ul class="list-group comments">
+            <ul class="list-group comments" id=${Id}>
                 {{if Comments != null}}
                 {{each Comments}}
                 <li class="list-group-item">
@@ -128,9 +155,11 @@
                 {{/each}}
                 {{/if}}
             </ul>
-            <div>
-                <input type="text" name="commentText" id=${Id} />
-                <input type="button" name="postComment" value="comment" onclick="postComment(${Id})" />
+            <div class="comment">
+                <input type="button" name="postComment" value="Post" onclick="postComment(${Id})" class="btn btn-sm" />
+                <div class="text">
+                    <textarea id="${createInputId(Id)}" class="form-control" />
+                </div>
             </div>
         </div>
         <div class="clearfix" />
@@ -154,6 +183,28 @@
         </li>*@
 </script>
 
+<script id="commentTemplate" type="text/x-jquery-tmpl">
+    <li class="list-group-item">
+        <div class="col-xs-12 col-sm-2 col-lg-2">
+            <div class="avatar">
+                <div>
+                    <img src="/UsersContent/${AuthorId}.jpg"
+                         alt="${AuthorName}"
+                         class="img-responsive photo" />
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="comment-author">
+                ${AuthorName} <em>${getDate(DateWritten)}</em>
+            </div>
+            <div class="post">
+                ${Message}
+            </div>
+        </div>
+    </li>
+</script>
+
 <h2>@Model.Title</h2>
 
 <h5>@Model.Description</h5>
@@ -164,14 +215,23 @@
             <span class="title">Posts</span>
         </div>
         <div class="new-post">
-            <input type="text" name="message" class="form-control" id="postMessage" />
+            <textarea class="form-control" id="postMessage"></textarea>
             <input type="hidden" name="courseId" value="@Model.Id" />
             <input type="button" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" onclick="postMessage()" />
         </div>
-        <ul class="list-group" id="posts">
-        </ul>
+        <ul class="list-group" id="posts"></ul>
+        <div id="load">
+            <img src="@Url.Content("~/App_Data/loading.gif")" alt="loading..." />
+        </div>
     </div>
 </div>
 <div class=" col-xs-2">
-    @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Id }, new { @class = "btn btn-lg btn-primary btn-block", id = "join" })
+    @if (Model.IsUserParticipant)
+    {
+        @Html.ActionLink("Leave", "LeaveCourse", new { courseId = Model.Id }, new { @class = "btn btn-lg btn-danger" })
+    }
+    else
+    {
+        @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Id }, new { @class = "btn btn-lg btn-success" })
+    }
 </div>

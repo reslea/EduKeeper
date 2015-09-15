@@ -24,7 +24,7 @@ namespace EduKeeper.Infrastructure
 
         void LogError(Error error);
 
-        IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1);
+        IPagedList<CourseDTO> GetCourses(int userId, string searchTerm, int pageNumber = 1);
 
         void AddCourse(int ownerId, string title, string description);
 
@@ -41,5 +41,9 @@ namespace EduKeeper.Infrastructure
         string GetCourseTitle(int courseId);
 
         PostDTO PostMessage(string message, int courseId, int userId);
+
+        CommentDTO PostComment(string message, int postId, int userId);
+
+        List<int> GetJoinedCourses(int userId);
     }
 }

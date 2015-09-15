@@ -274,7 +274,7 @@ td.action {
     }
 
 #btn-post {
-    margin: 5px;
+    margin: 5px 0;
 }
 
 li#first-post {
@@ -301,3 +301,32 @@ ul.comments{
     text-align: left;
     font-size: small;
 }
+
+.comment input{
+    float:left;
+    height: 35px;
+}
+
+.comment > .text{
+    float: left;
+    margin-left: 10px;
+    width: 75%;
+}
+
+.comment input[type=button]{
+    margin-left: 115px;
+}
+
+.new-post > .form-control{
+    height: 100px;
+        font-size: 0.5em;
+}
+
+textarea {
+    resize: none;
+}
+
+.text textarea{
+    height: 30px;
+}
+

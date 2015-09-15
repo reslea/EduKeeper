@@ -21,7 +21,10 @@ namespace EduKeeper.Web.Controllers
         [AllowAnonymous]
         public ActionResult Courses(string searchTerm, int pageNumber = 1)
         {
-            var courses = courseServices.GetCourses(searchTerm, pageNumber);
+            int userId = SessionWrapper.Current.User != null ? 
+                SessionWrapper.Current.User.Id : 0;
+
+            var courses = dataAccess.GetCourses(userId, searchTerm, pageNumber);
 
             if (Request.IsAjaxRequest())
             {
@@ -48,32 +51,37 @@ namespace EduKeeper.Web.Controllers
             }
         }
         [AllowAnonymous]
-        public ActionResult AutocompleteCourse(string term)
+        public JsonResult AutocompleteCourse(string term)
         {
             var model = dataAccess.AutocompleteCourse(term);
 
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetPosts(int courseId, int pageNumber = 1)
+        public JsonResult GetPosts(int courseId, int pageNumber = 1)
         {
             int userId = SessionWrapper.Current.User.Id;
             string courseTitle = dataAccess.GetCourseTitle(courseId);
 
-            var posts = new PostCollectionModel()
+            var posts = dataAccess.GetPosts(userId, courseId, pageNumber);
+
+            var postCollection = new PostCollectionModel()
             {
                 CourseId = courseId,
-                Posts = dataAccess.GetPosts(userId, courseId, pageNumber),
+                Posts = posts,
                 CourseTitle = courseTitle
             };
-            return Json(posts.Posts, JsonRequestBehavior.AllowGet);
+            return Json(postCollection.Posts, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Course(int courseId)
         {
             var model = courseServices.GetCourse(courseId);
             if (model != null)
+            {
+                model.IsUserParticipant = SessionWrapper.Current.JoinedCourses.Contains(courseId);
                 return View(model);
+            }
             else
                 return RedirectToAction("Error", "Account", new { ErrorCase.CourseNotExist });
         }
@@ -81,16 +89,33 @@ namespace EduKeeper.Web.Controllers
         public ActionResult JoinCourse(int courseId)
         {
             courseServices.JoinCourse(courseId);
+            SessionWrapper.Current.JoinedCourses.Add(courseId);
             return View();
         }
-        [HttpPost]
-        public ActionResult PostMessage(string message, int courseId, int pageNumber = 1)
+
+        public ActionResult LeaveCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            courseServices.LeaveCourse(courseId);
+            SessionWrapper.Current.JoinedCourses.Remove(courseId);
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult PostMessage(string message, int courseId, int pageNumber = 1)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return Json(null, JsonRequestBehavior.AllowGet);
             
             var post = courseServices.PostMessage(message, courseId);
 
             return Json(post, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult PostComment(string message, int postId)
+        {
+            var comment = courseServices.PostComment(message, postId);
+
+            return Json(comment, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using EduKeeper.Web.Services.Interfaces;
+﻿using EduKeeper.EntityFramework;
+using EduKeeper.Infrastructure;
+using EduKeeper.Web.Services.Interfaces;
 using Ninject;
 using System;
 using System.Web.Mvc;
@@ -13,16 +15,27 @@ namespace EduKeeper.Web.Services
         [Inject]
         public IUserServices userServices { get; set; }
 
+        [Inject]
+        public IDataAccess dataAccess { get; set; }
+
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            if (SessionWrapper.Current.User == null || SessionWrapper.Current.User.Id == 0)
+            var user = userServices.GetUserFromCookie();
+
+            if (SessionWrapper.Current.User == null ||
+                SessionWrapper.Current.User.Id == 0)
             {
-                var user = userServices.GetUserFromCookie();
-                if (user != null)
-                    SessionWrapper.Current.User = user;
+                if (user == null)
+                {
+                    base.OnAuthorization(filterContext);
+                    return;
+                }
+
+                SessionWrapper.Current.User = user;
+                SessionWrapper.Current.JoinedCourses = dataAccess.GetJoinedCourses(user.Id);
             }
-            
-            base.OnAuthorization(filterContext);
+
+            SessionWrapper.Current.JoinedCourses = dataAccess.GetJoinedCourses(user.Id);
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)

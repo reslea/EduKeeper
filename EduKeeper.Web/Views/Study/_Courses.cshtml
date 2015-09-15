@@ -1,24 +1,33 @@
-﻿@using PagedList.Mvc;
+﻿@using PagedList;
+@using PagedList.Mvc;
 @using EduKeeper.Web.Models;
-@model CourseCollectionModel
+@using EduKeeper.Infrastructure
+@model IPagedList<CourseDTO>
 
 <div id="courses">
     <table id="coursesTable">
-        @for (int i = 0; i < Model.Courses.Count; i++)
+        @for (int i = 0; i < Model.Count; i++)
         {
             <tr>
                 <td class="title">
                     <div class="navbar-link">
-                        <a href="@Url.Action("Course", "Study", new { courseId = Model.Courses[i].Id })">@Model.Courses[i].Title</a>
+                        <a href="@Url.Action("Course", "Study", new { courseId = Model[i].Id })">@Model[i].Title</a>
                     </div>
                 </td>
-                <td class="description">@Model.Courses[i].Description</td>
+                <td class="description">@Model[i].Description</td>
                     @*<a href="@Url.Action("User", new { id = Model.Courses[i].Owner.Id })">
                         <div>Owner: @String.Format("{0} {1}", Model.Courses[i].Owner.FirstName, Model.Courses[i].Owner.LastName)</div>
                         </a>*@
                 <td class="action">
                     <div>
-                        @Html.ActionLink("Join", "JoinCourse", new { courseId = Model.Courses[i].Id }, new { @class = "btn btn-lg btn-info" })
+                        @if (Model[i].IsJoined)
+                        {
+                            @Html.ActionLink("Leave", "LeaveCourse", new { courseId = Model[i].Id }, new { @class = "btn btn-lg btn-danger" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Join", "JoinCourse", new { courseId = Model[i].Id }, new { @class = "btn btn-lg btn-success" })
+                        }
                     </div>
                 </td>
             </tr>
@@ -29,6 +38,6 @@
         }
     </table>
     <div class="pagedList" data-target="#courses">
-        @Html.PagedListPager(Model.Courses, pageNumber => Url.Action("Courses", new { pageNumber }), PagedListRenderOptions.OnlyShowFivePagesAtATime)
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Courses", new { pageNumber }), PagedListRenderOptions.OnlyShowFivePagesAtATime)
     </div>
 </div>

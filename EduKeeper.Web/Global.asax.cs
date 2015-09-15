@@ -1,5 +1,6 @@
 ﻿using EduKeeper;
 using EduKeeper.Web;
+using EduKeeper.Web.Services;
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -33,5 +34,9 @@ namespace EduKeeper
             System.Diagnostics.Debug.WriteLine(exception);
             Response.Redirect("/Account/Error");
         }
+
+        //protected void Session_End(object sender, EventArgs e)
+        //{
+        //}
     }
 }

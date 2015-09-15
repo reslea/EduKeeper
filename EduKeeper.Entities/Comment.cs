@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduKeeper.Entities
 {
@@ -10,10 +11,10 @@ namespace EduKeeper.Entities
 
         public string Message { get; set; }
 
-        [Required]
-        public User Author { get; set; }
+        public int? AuthorId { get; set; }
 
-        [Required]
+        public virtual User Author { get; set; }
+
         public int PostId { get; set; }
 
         public virtual Post Post { get; set; }

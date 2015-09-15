@@ -84,25 +84,33 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1)
+        public IPagedList<CourseDTO> GetCourses(int userId, string searchTerm, int pageNumber = 1)
         {
-            using (var context = new EduKeeperContext())
-            {
-                if (String.IsNullOrEmpty(searchTerm))
-                {
-                    return context.Courses
-                        .OrderBy(c => c.Id)
-                        .ToPagedList(pageNumber, 10);
-                }
-                else
-                {
-                    return context.Courses
-                        .Where(c => c.Description.ToLower().Contains(searchTerm.ToLower()) ||
-                            c.Title.ToLower().Contains(searchTerm.ToLower()))
 
-                            .OrderBy(c => c.Id)
-                            .ToPagedList(pageNumber, 10);
+            using (var context = new EduKeeperContext())
+            {                
+                IQueryable<Course> courses;
+
+                if (String.IsNullOrEmpty(searchTerm))
+                    courses = context.Courses;
+                
+                else //if we have what to search
+                {
+                    courses = context.Courses
+                        .Where(c => c.Description.ToLower().Contains(searchTerm.ToLower()) ||
+                            c.Title.ToLower().Contains(searchTerm.ToLower()));
                 }
+
+                return courses
+                    .OrderBy(c => c.Id)
+                    .Select(course => new CourseDTO
+                    {
+                        Id = course.Id,
+                        Description = course.Description,
+                        Title = course.Title,
+                        IsJoined = course.Users.Any(u => u.Id == userId)
+                    })
+                    .ToPagedList(pageNumber, 10);
             }
         }
 
@@ -192,43 +200,47 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
-                if (context.Users.Any(user => user.Id == userId &&
+                if (!context.Users.Any(user => user.Id == userId &&
                     user.Courses.Any(course => course.Id == courseId)))
+                    return null;
+
+                var posts = context.Posts
+                    .Where(post => post.Course.Id == courseId)
+                    .Include(post => post.Author)
+                    .OrderByDescending(post => post.Id) //it is needed for ToPagedList()
+                    .ProjectTo<PostDTO>()
+                    .ToPagedList(pageNumber, 10);
+
+
+                List<int> postIds = posts.Select(p => p.Id).ToList();
+
+                if (posts.Count <= 0)
+                    return null;
+
+                var comments = context.Comments
+                    .Where(comment => postIds.Contains(comment.PostId))
+                    .Include(comment => comment.Author)
+                    .ProjectTo<CommentDTO>()
+                    .GroupBy(comment => comment.PostId, c => c)
+                    .Select(group => group.Take(11)
+                        .OrderByDescending(c => c.DateWritten)
+                        .ToList())
+                    .ToList();
+
+
+
+                foreach (List<CommentDTO> item in comments)
                 {
-                    var posts = context.Posts
-                        .Where(post => post.Course.Id == courseId)
-                        .Include(post => post.Author)
-                        .OrderByDescending(post => post.Id) //it is needed for ToPagedList()
-                        .ProjectTo<PostDTO>()
-                        .ToPagedList(pageNumber, 20);
+                    var post = posts.Single(p => p.Id == item.First().PostId);
+
+                    post.Comments = item.Take(10).ToList();
 
 
-                    List<int> postIds = posts.Select(p => p.Id).ToList();
-
-                    if (posts.Count > 0)
-                    {
-                        var comments = context.Comments
-                            .Where(comment => postIds.Contains(comment.PostId))
-                            .Include(comment => comment.Author)
-                            .ProjectTo<CommentDTO>()
-                            .GroupBy(comment => comment.PostId, c => c)
-                            .Select(group => group.Take(20)
-                                .OrderByDescending(c => c.DateWritten)
-                                .ToList())
-                            .ToList();
-
-
-
-                        foreach (List<CommentDTO> item in comments)
-                        {
-                            posts.Single(p => p.Id == item.First().PostId)
-                                .Comments = item.ToList();
-                        }
-                    }
-
-                    return posts;
+                    if (item.Count == 11)
+                        post.IsHasMore = true;
                 }
-                else return null;
+
+                return posts;
             }
         }
 
@@ -244,32 +256,67 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
-                var newPost = new Post
+                var post = context.Posts.Create();
+
+                post.Message = message;
+                post.AuthorId = userId;
+                post.CourseId = courseId;
+                post.DateWritten = DateTime.Now;
+
+                if (context.Courses.Any(c => c.Id == courseId
+                    && c.Users.Any(u => u.Id == userId)))
                 {
-                    Message = message,
-                    AuthorId = userId,
-                    CourseId = courseId,
-                    DateWritten = DateTime.Now
-                };
-                if (context.Courses.Single(c => c.Id == courseId).Users.Any(u => u.Id == userId))
-                {
-                    context.Posts.Add(newPost);
+                    context.Posts.Add(post);
                     context.SaveChanges();
                 }
 
-                return Mapper.Map<PostDTO>(newPost);
+                return Mapper.Map<PostDTO>(post);
+            }
+        }
+
+
+        public CommentDTO PostComment(string message, int postId, int userId)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                var comment = context.Comments.Create();
+
+                comment.Message = message;
+                comment.AuthorId = userId;
+                comment.PostId = postId;
+                comment.DateWritten = DateTime.Now;
+
+                if (context.Posts.Any(p => p.Id == postId 
+                    && p.Course.Users.Any(u => u.Id == userId)))
+                {
+                    context.Comments.Add(comment);
+                    context.SaveChanges();
+                }
+
+                return Mapper.Map<CommentDTO>(comment);
             }
         }
 
         public IPagedList<PostDTO> GetFeed(int userId, int pageNumber)
         {
             using (var context = new EduKeeperContext())
-            {
+            {                
                 return context.Posts
                         .Where(post => post.Course.Users.Any(user => user.Id == userId))
                         .OrderBy(post => post.DateWritten)
                         .ProjectTo<PostDTO>()
                         .ToPagedList(pageNumber, 20);
+            }
+        }
+
+        public List<int> GetJoinedCourses(int userId)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Courses
+                    .Where(c => c.Users.Any(user => user.Id == userId))
+                    .Select(c => c.Id)
+                    .ToList();
             }
         }
     }

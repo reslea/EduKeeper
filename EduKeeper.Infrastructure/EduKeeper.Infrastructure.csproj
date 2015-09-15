@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommentDTO.cs" />
+    <Compile Include="CourseDTO.cs" />
     <Compile Include="ErrorCase.cs" />
     <Compile Include="ErrorDescriptionAttribute.cs" />
     <Compile Include="IDataAccess.cs" />

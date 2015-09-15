@@ -49,23 +49,16 @@ namespace EduKeeper.Web.Services.Courses
             dataAccess.AddCourse(ownerId, model.Title, model.Description);
         }
 
-
-        public CourseCollectionModel GetCourses(string searchTerm, int pageNumber = 1)
-        {
-            var courses = dataAccess.GetCourses(searchTerm, pageNumber);
-            int pageCount = courses.PageCount;
-
-            return new CourseCollectionModel
-            {
-                Courses = courses,
-                PageCount = pageCount
-            };
-        }
-
         public PostDTO PostMessage(string message, int courseId)
         { 
             int userId = SessionWrapper.Current.User.Id;
             return dataAccess.PostMessage(message, courseId, userId);
+        }
+
+        public CommentDTO PostComment(string message, int postId)
+        {
+            int userId = SessionWrapper.Current.User.Id;
+            return dataAccess.PostComment(message, postId, userId);
         }
     }
 }

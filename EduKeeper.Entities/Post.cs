@@ -7,7 +7,6 @@ namespace EduKeeper.Entities
 {
     public class Post
     {
-
         public int Id { get; set; }
 
         public string Message { get; set; }
@@ -16,9 +15,9 @@ namespace EduKeeper.Entities
 
         public int CourseId { get; set; }
 
-        public User Author { get; set; }
+        public virtual User Author { get; set; }
 
-        public Course Course { get; set; }
+        public virtual Course Course { get; set; }
 
         public DateTime DateWritten { get; set; }
 
