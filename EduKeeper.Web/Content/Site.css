@@ -1,6 +1,5 @@
 ﻿body {
     font-size: 3em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
     color: #232323;
     background-color: azure;
 }
@@ -53,7 +52,7 @@ textarea {
 }
 
 .validation-summary-errors {
-    font-weight: bold;
+    font-size: 1em;
     color: #f00;
 }
 
@@ -65,16 +64,16 @@ textarea {
     margin: 20px auto;
 }
 
-    #userDataFields td {
-        font-size: 25px;
-    }
-
     #userDataFields h1 {
         font-size: 50px;
     }
 
     #userDataFields .form-control {
         font-size: 25px;
+    }
+
+    #userDataFields input {
+        margin: 5px 0px;
     }
 
 .validation {
@@ -112,8 +111,12 @@ td.info {
 
 .avatar {
     vertical-align: top;
+    height: 100%;
 }
 
+@media (max-width: 500px){
+
+}
 #under-picture {
     max-width: 200px;
     text-align: center;
@@ -198,7 +201,7 @@ div.description {
     margin: 10px;
 }
 
-#courses {
+#courses #coursesTable{
     width: 100%;
     table-layout: fixed;
 }
@@ -225,7 +228,7 @@ td.action {
 }
 
 #btnSearch {
-    margin: 10px;
+    margin: 10px 10px 10px 0px;
     float: left;
 }
 
@@ -242,3 +245,88 @@ td.action {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+#posts {
+}
+
+    #posts .author {
+        vertical-align: central;
+        font-weight: bold;
+        font-size: 0.6em;
+    }
+
+    #posts .post {
+        font-size: 0.5em;
+        min-height: 30px;
+    }
+
+    #post .avatar {
+        height: 100%;
+    }
+
+    #posts .photo {
+
+        max-width: 50px;
+    }
+
+    #posts .content{
+        float:left;
+    }
+
+#btn-post {
+    margin: 5px 0;
+}
+
+li#first-post {
+    list-style-type: none;
+}
+
+ul.comments{
+    margin-left: 100px;
+    margin-bottom: 0;
+}
+
+.comments > .list-group-item{
+    padding-left: 0;
+}
+
+.comment-author{
+        vertical-align: central;
+        font-size: 0.6em;
+}
+
+.comment-author, author{
+    margin-left: 10px;
+    font-weight: normal;
+    text-align: left;
+    font-size: small;
+}
+
+.comment input{
+    float:left;
+    height: 35px;
+}
+
+.comment > .text{
+    float: left;
+    margin-left: 10px;
+    width: 75%;
+}
+
+.comment input[type=button]{
+    margin-left: 115px;
+}
+
+.new-post > .form-control{
+    height: 100px;
+        font-size: 0.5em;
+}
+
+textarea {
+    resize: none;
+}
+
+.text textarea{
+    height: 30px;
+}
+

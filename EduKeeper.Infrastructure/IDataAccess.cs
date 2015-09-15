@@ -14,7 +14,7 @@ namespace EduKeeper.Infrastructure
         /// <returns>true if user is registered, false if email is duplicated</returns>
         bool RegistrateUser(User user);
 
-        User GetUser(int id);
+        //User GetUser(int id);
         
         User AuthenticateUser(string email);
 
@@ -24,7 +24,7 @@ namespace EduKeeper.Infrastructure
 
         void LogError(Error error);
 
-        IPagedList<Course> GetCourses(string searchTerm, int pageNumber = 1, int pageSize = 10);
+        IPagedList<CourseDTO> GetCourses(int userId, string searchTerm, int pageNumber = 1);
 
         void AddCourse(int ownerId, string title, string description);
 
@@ -35,5 +35,15 @@ namespace EduKeeper.Infrastructure
         void LeaveCourse(int courseId, int userId);
 
         List<LabelWrapper> AutocompleteCourse(string term);
+
+        IPagedList<PostDTO> GetPosts(int userId, int courseId, int pageNumber = 1);
+
+        string GetCourseTitle(int courseId);
+
+        PostDTO PostMessage(string message, int courseId, int userId);
+
+        CommentDTO PostComment(string message, int postId, int userId);
+
+        List<int> GetJoinedCourses(int userId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EduKeeper;
 using EduKeeper.Web;
+using EduKeeper.Web.Services;
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -27,8 +28,15 @@ namespace EduKeeper
         protected void Application_Error(object sender, EventArgs e)
         {
             Exception exception = Server.GetLastError();
+            if (exception.Message.Contains("__browserLink"))
+                return;
+
             System.Diagnostics.Debug.WriteLine(exception);
-            Response.Redirect("/Error");
+            Response.Redirect("/Account/Error");
         }
+
+        //protected void Session_End(object sender, EventArgs e)
+        //{
+        //}
     }
 }

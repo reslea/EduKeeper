@@ -43,11 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommentDTO.cs" />
+    <Compile Include="CourseDTO.cs" />
     <Compile Include="ErrorCase.cs" />
     <Compile Include="ErrorDescriptionAttribute.cs" />
     <Compile Include="IDataAccess.cs" />
     <Compile Include="IErrorUtilities.cs" />
     <Compile Include="LabelWrapper.cs" />
+    <Compile Include="PostDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

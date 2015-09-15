@@ -16,5 +16,8 @@ namespace EduKeeper.Web.Models
 
         [StringLength(300), Required]
         public string Description { get; set; }
+
+        //for displaying JOIN or LEAVE button
+        public bool IsUserParticipant { get; set; }
     }
 }

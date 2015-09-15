@@ -161,9 +161,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CourseCollectionModel.cs" />
     <Compile Include="Models\CourseModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\PostCollectionModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Courses\CourseServices.cs" />
@@ -177,7 +177,10 @@
     <Compile Include="Services\SessionWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\loading.gif" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Scripts\jquery.tmpl.js" />
+    <Content Include="Scripts\jquery.tmpl.min.js" />
     <Content Include="Scripts\site.js" />
     <Content Include="UsersContent\index.gif" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -285,9 +288,7 @@
     <Content Include="Views\Study\Course.cshtml" />
     <Content Include="Views\Study\JoinCourse.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
