@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using EduKeeper.Entities;
 using EduKeeper.Infrastructure;
@@ -9,6 +8,7 @@ using System.Data.Entity;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using EduKeeper.Infrastructure.DTO;
+using System.Text;
 
 namespace EduKeeper.EntityFramework
 {
@@ -42,7 +42,6 @@ namespace EduKeeper.EntityFramework
                         .SingleOrDefault(u => u.Email == email && u.Password == password);
             }
         }
-
 
         public User AuthenticateUser(string email)
         {
@@ -89,12 +88,12 @@ namespace EduKeeper.EntityFramework
         {
 
             using (var context = new EduKeeperContext())
-            {                
+            {
                 IQueryable<Course> courses;
 
                 if (String.IsNullOrEmpty(searchTerm))
                     courses = context.Courses;
-                
+
                 else //if we have what to search
                 {
                     courses = context.Courses
@@ -175,14 +174,6 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        //public User GetUser(int id)
-        //{
-        //    using (var context = new EduKeeperContext())
-        //    {
-        //        return context.Users.Single(u => u.Id == id);
-        //    }
-        //}
-
         public List<LabelWrapper> AutocompleteCourse(string term)
         {
             using (var context = new EduKeeperContext())
@@ -222,25 +213,24 @@ namespace EduKeeper.EntityFramework
                     .Where(comment => postIds.Contains(comment.PostId))
                     .Include(comment => comment.Author)
                     .ProjectTo<CommentDTO>()
+                    .OrderByDescending(comment => comment.Id)
                     .GroupBy(comment => comment.PostId, c => c)
-                    .Select(group => group.Take(11)
-                        .OrderByDescending(c => c.DateWritten)
-                        .ToList())
+                    .Select(group => group.Take(11))
                     .ToList();
 
 
 
-                foreach (List<CommentDTO> item in comments)
+                foreach (var item in comments)
                 {
                     var post = posts.Single(p => p.Id == item.First().PostId);
 
-                    post.Comments = item.Take(10).ToList();
+                    post.Comments = item.Take(10)
+                        .ToList();
 
 
-                    if (item.Count == 11)
+                    if (item.Count() == 11)
                         post.IsHasMore = true;
                 }
-
                 return posts;
             }
         }
@@ -275,7 +265,6 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-
         public CommentDTO PostComment(string message, int postId, int userId)
         {
             using (var context = new EduKeeperContext())
@@ -287,7 +276,7 @@ namespace EduKeeper.EntityFramework
                 comment.PostId = postId;
                 comment.DateWritten = DateTime.Now;
 
-                if (context.Posts.Any(p => p.Id == postId 
+                if (context.Posts.Any(p => p.Id == postId
                     && p.Course.Users.Any(u => u.Id == userId)))
                 {
                     context.Comments.Add(comment);
@@ -301,7 +290,7 @@ namespace EduKeeper.EntityFramework
         public IPagedList<PostDTO> GetFeed(int userId, int pageNumber)
         {
             using (var context = new EduKeeperContext())
-            {                
+            {
                 return context.Posts
                         .Where(post => post.Course.Users.Any(user => user.Id == userId))
                         .OrderBy(post => post.DateWritten)
@@ -310,14 +299,66 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public List<int> GetJoinedCourses(int userId)
+        public List<CourseDTO> GetJoinedCourses(int userId)
         {
             using (var context = new EduKeeperContext())
             {
-                return context.Courses
-                    .Where(c => c.Users.Any(user => user.Id == userId))
-                    .Select(c => c.Id)
-                    .ToList();
+                return context.Users.Where(u => u.Id == userId)
+                    .SelectMany(u => u.Courses)
+                    .Select(c => new CourseDTO()
+                    {
+                        Id = c.Id,
+                        Title = c.Title,
+                        IsJoined = true
+                    }).ToList();
+            }
+        }
+
+        public bool IsPartisipant(int userId, int courseId)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Users
+                    .Any(u => u.Id == userId &&
+                        u.Courses.Any(c => c.Id == courseId));
+
+            }
+        }
+
+
+        public void LogVisitedCourses(List<int> visitedCourses, int userId)
+        {
+            var sbCourses = new StringBuilder();
+            foreach (int courseId in visitedCourses)
+            {
+                sbCourses.Append('#');
+                sbCourses.Append(courseId);
+            }
+
+            using (var context = new EduKeeperContext())
+            {
+                var user = context.Users.Single(u => u.Id == userId);
+
+                user.VisitedCourses = sbCourses.ToString();
+                // 20 mins session lives after unactivity (if it`s not stored in DB)
+                user.LastVisited = DateTime.Now.AddMinutes(-20);
+            }
+        }
+
+        public IPagedList<CommentDTO> GetComments(int userId, int postId, int pageNumber = 1)
+        {
+            using(var context = new EduKeeperContext())
+            {
+                //or maybe just get courseId with one of parameters
+            if (!context.Users.Any(user => user.Id == userId &&
+                user.Courses.Any(course => course.Messages.Any(p => p.Id == postId))))
+                return null;
+
+            return context.Comments
+                    .Where(comment => comment.Post.Id == postId)
+                    .OrderByDescending(comment => comment.Id)
+                    .ProjectTo<CommentDTO>()
+                    .ToPagedList(pageNumber, 10);
             }
         }
     }

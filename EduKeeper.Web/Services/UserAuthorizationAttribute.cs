@@ -13,29 +13,21 @@ namespace EduKeeper.Web.Services
     public class UserAuthorizationAttribute : AuthorizeAttribute
     {
         [Inject]
-        public IUserServices userServices { get; set; }
+        public IUserServices UserServices { get; set; }
 
         [Inject]
-        public IDataAccess dataAccess { get; set; }
+        public IDataAccess DataAccess { get; set; }
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            var user = userServices.GetUserFromCookie();
-
-            if (SessionWrapper.Current.User == null ||
-                SessionWrapper.Current.User.Id == 0)
+            if (SessionWrapper.Current.User == null || SessionWrapper.Current.User.Id == 0)
             {
-                if (user == null)
-                {
-                    base.OnAuthorization(filterContext);
-                    return;
-                }
-
-                SessionWrapper.Current.User = user;
-                SessionWrapper.Current.JoinedCourses = dataAccess.GetJoinedCourses(user.Id);
+                var user = UserServices.GetUserFromCookie();
+                if (user != null)
+                    SessionWrapper.Current.User = user;
             }
 
-            SessionWrapper.Current.JoinedCourses = dataAccess.GetJoinedCourses(user.Id);
+            base.OnAuthorization(filterContext);
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)

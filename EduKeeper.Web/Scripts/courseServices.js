@@ -1,5 +1,4 @@
-﻿
-function getDate(jsonDateString){
+﻿function getDate(jsonDateString){
     var month = new Array();
     month[0] = "Jan";
     month[1] = "Feb";
@@ -29,7 +28,7 @@ function createInputId(id){
 
 function postMessage(){
     var options ={
-        url: '@Url.Action("PostMessage")',
+        url: '/Study/PostMessage',
         type: "post",
         data: {
             message: $("#postMessage").val(),
@@ -46,7 +45,7 @@ function postMessage(){
 
 function postComment(id){
     var options ={
-        url: '@Url.Action("PostComment")',
+        url: '/Study/PostComment',
         type: "post",
         data: {
             message: $("#text" + id).val(),

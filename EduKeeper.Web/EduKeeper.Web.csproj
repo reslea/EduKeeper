@@ -162,6 +162,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CourseModel.cs" />
+    <Compile Include="Models\LeftMenuModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\PostCollectionModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -184,7 +185,6 @@
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\jquery.tmpl.min.js" />
     <Content Include="Scripts\site.js" />
-    <Content Include="Scripts\templates.js" />
     <Content Include="UsersContent\index.gif" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -290,6 +290,7 @@
     <Content Include="Views\Study\_Courses.cshtml" />
     <Content Include="Views\Study\Course.cshtml" />
     <Content Include="Views\Study\JoinCourse.cshtml" />
+    <Content Include="Views\Study\_LeftMenu.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

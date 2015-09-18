@@ -32,7 +32,8 @@ namespace EduKeeper.Web.Services
 
         public void LeaveCourse(int courseId)
         {
-            throw new NotImplementedException();
+            int userId = SessionWrapper.Current.User.Id;
+            dataAccess.LeaveCourse(courseId, userId);
         }
 
         public List<UserModel> GetCourseParticipants(int courseId)

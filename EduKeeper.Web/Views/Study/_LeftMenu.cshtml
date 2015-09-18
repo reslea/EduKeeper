@@ -1,0 +1,51 @@
+﻿@model LeftMenuModel
+
+@{
+    if (Model.User.Id == 0)
+    {
+        return;
+    }
+}
+
+<div class="logo">
+
+</div>
+
+<hr />
+
+<div class="user-info">
+    <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+            <a href="@Url.Action("EditProfile", "Account")">
+                <div class="avatar">
+                    <img class="img-responsive img-circle user-photo" src="@Url.Content("~/UsersContent/" + Model.User.Id + ".jpg")" />
+                </div>
+                <div class="author">
+                    @(Model.User.FirstName + " " + Model.User.LastName)
+                </div>
+            </a>
+            <div class="clearfix"></div>
+            <hr />
+            <div class="clearfix"></div>
+        </li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+<ul class="sidebar-nav">
+    @foreach (var item in Model.Courses)
+    {
+        <li class="sidebar-brand">
+            <a href="@Url.Action("Course", new { courseId = item.Id})">@item.Title</a>
+        </li>
+    }
+</ul>
+<hr />
+
+
+@*<div class="btn-group-vertical course-list" role="group">
+
+    @foreach (var item in Model.Courses)
+    {
+        <input class="left-menu-item btn btn-info" type="button" name="name" value="@item.Title" onclick="location.href='@Url.Action("Course", new { courseId = item.Id})'" />
+    }
+</div>*@

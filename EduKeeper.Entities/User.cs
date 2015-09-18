@@ -36,6 +36,8 @@ namespace EduKeeper.Entities
 
         public virtual ICollection<Course> Courses { get; set; }
 
-        //public virtual ICollection<Post> Posts { get; set; }
+        public DateTime LastVisited { get; set; }
+
+        public string VisitedCourses { get; set; }
     }
 }

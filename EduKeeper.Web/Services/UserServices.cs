@@ -13,18 +13,13 @@ namespace EduKeeper.Web.Services
 {
     public class UserServices : IUserServices
     {
-        private IDataAccess dataAccess;
+        public IDataAccess DataAccess;
 
         public UserServices(IDataAccess dataAccess)
         {
-            this.dataAccess = dataAccess;
+            this.DataAccess = dataAccess;
         }
 
-        static UserServices()
-        {
-            Mapper.CreateMap<UserModel, User>();
-            Mapper.CreateMap<User, UserModel>();
-        }
         /// <summary>
         /// 
         /// </summary>
@@ -33,7 +28,7 @@ namespace EduKeeper.Web.Services
         public bool RegistrateUser(UserModel model)
         {
             User user = Mapper.Map<User>(model);
-            return dataAccess.RegistrateUser(user);
+            return DataAccess.RegistrateUser(user);
         }
 
         public UserModel GetUser(LoginModel model)
@@ -60,7 +55,7 @@ namespace EduKeeper.Web.Services
         {
             User user = Mapper.Map<User>(model);
 
-            return Mapper.Map<UserModel>(dataAccess.UpdateUserData(user));
+            return Mapper.Map<UserModel>(DataAccess.UpdateUserData(user));
         }
 
         public void AddAuthCookieToResponse(LoginModel model)
@@ -68,7 +63,7 @@ namespace EduKeeper.Web.Services
             var authCookie = FormsAuthentication.GetAuthCookie(model.Email, model.RememberMe);
             
             if(model.RememberMe)
-                authCookie.Expires = DateTime.UtcNow.AddMonths(1);
+                authCookie.Expires = DateTime.UtcNow.AddMonths(3);
             
             HttpContext.Current.Response.Cookies.Add(authCookie);
         }
@@ -86,16 +81,24 @@ namespace EduKeeper.Web.Services
 
         public UserModel GetUserModelFromDb(LoginModel model)
         {
-            var userFromDb = dataAccess.AuthenticateUser(model.Email, model.Password);
+            var userFromDb = DataAccess.AuthenticateUser(model.Email, model.Password);
 
             return Mapper.Map<UserModel>(userFromDb);
         }
 
         public UserModel GetUserModelFromDb(string email)
         {
-            var userFromDb = dataAccess.AuthenticateUser(email);
+            var userFromDb = DataAccess.AuthenticateUser(email);
 
             return Mapper.Map<UserModel>(userFromDb);
+        }
+
+        public void LogVisitedCourses()
+        {
+            //var visitedCourses = SessionWrapper.Current.VisitedCourses;
+            int userId = SessionWrapper.Current.User.Id;
+
+            //DataAccess.LogVisitedCourses(visitedCourses, userId);
         }
     }
 }

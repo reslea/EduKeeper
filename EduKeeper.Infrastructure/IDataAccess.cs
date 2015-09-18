@@ -45,6 +45,12 @@ namespace EduKeeper.Infrastructure
 
         CommentDTO PostComment(string message, int postId, int userId);
 
-        List<int> GetJoinedCourses(int userId);
+        List<CourseDTO> GetJoinedCourses(int userId);
+
+        bool IsPartisipant(int userId, int courseId);
+
+        void LogVisitedCourses(List<int> visitedCourses, int userId);
+
+        IPagedList<CommentDTO> GetComments(int userId, int postId, int pageNumber = 1);
     }
 }

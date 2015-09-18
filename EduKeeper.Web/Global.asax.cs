@@ -1,11 +1,13 @@
 ﻿using EduKeeper;
 using EduKeeper.Web;
 using EduKeeper.Web.Services;
+using EduKeeper.Web.Services.Interfaces;
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web.Security;
 
 namespace EduKeeper
 {
@@ -34,9 +36,10 @@ namespace EduKeeper
             System.Diagnostics.Debug.WriteLine(exception);
             Response.Redirect("/Account/Error");
         }
-
-        //protected void Session_End(object sender, EventArgs e)
-        //{
-        //}
+        
+        protected void Session_End(object sender, EventArgs e)
+        {
+            Session.Abandon();
+        }
     }
 }

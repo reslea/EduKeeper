@@ -20,5 +20,7 @@ namespace EduKeeper.Web.Services.Interfaces
         void AddAuthCookieToResponse(LoginModel model);
 
         UserModel GetUserFromCookie();
+
+        void LogVisitedCourses();
     }
 }

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using EduKeeper.Web.Services;
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -14,10 +15,17 @@
     @Scripts.Render("~/bundles/custom")
 </head>
 <body>
-    <div class="container">
-            @RenderBody()
-    </div>
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            @{Html.RenderAction("ViewLeftMenu", "Study");}
+        </div>
 
+        <div id="page-content-wrapper">
+            <div class="main-content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
