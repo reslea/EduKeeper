@@ -3,7 +3,6 @@
 @model UserModel
 @{
     ViewBag.Title = "EditProfile";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { id = "editForm", enctype = "multipart/form-data" }))
 {

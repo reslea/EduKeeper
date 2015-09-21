@@ -8,31 +8,35 @@ namespace EduKeeper.Web.Services
 {
     public class SessionWrapper : ISessionWrapper
     {
-        public UserModel User { get; set; }
+        public int UserId { get; set; }
 
-        //private List<int> _visitedCourses;
+        private List<int> _visitedCourses;
 
-        //public List<int> VisitedCourses { 
-        //    get 
-        //    {
-        //        if (_visitedCourses == null)
-        //            _visitedCourses = new List<int>();
-        //        return _visitedCourses;
-        //    }
-        //    set { }
-        //}
+        public List<int> VisitedCourses
+        {
+            get
+            {
+                if (_visitedCourses == null)
+                    _visitedCourses = new List<int>();
+                return _visitedCourses;
+            }
+            set { _visitedCourses = value; }
+        }
 
         public static SessionWrapper Current
         {
             get
             {
+                if (HttpContext.Current == null)
+                    return null;
+
                 SessionWrapper session = (SessionWrapper)HttpContext.Current.Session["_SessionWrapper"];
 
                 if (session == null)
                 {
                     session = new SessionWrapper();
                     HttpContext.Current.Session["_SessionWrapper"] = session;
-                    
+
                 }
                 return session;
             }

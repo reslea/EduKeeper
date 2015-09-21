@@ -3,6 +3,7 @@ using EduKeeper.Infrastructure;
 using EduKeeper.Web.Services.Interfaces;
 using Ninject;
 using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -20,13 +21,13 @@ namespace EduKeeper.Web.Services
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            if (SessionWrapper.Current.User == null || SessionWrapper.Current.User.Id == 0)
+            if (SessionWrapper.Current.UserId == 0)
             {
-                var user = UserServices.GetUserFromCookie();
-                if (user != null)
-                    SessionWrapper.Current.User = user;
+                var userId = UserServices.GetUserIdFromCookie();
+                
+                if (userId.HasValue)
+                    SessionWrapper.Current.UserId = userId.Value;
             }
-
             base.OnAuthorization(filterContext);
         }
 

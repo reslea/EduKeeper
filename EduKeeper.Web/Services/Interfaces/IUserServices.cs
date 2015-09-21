@@ -9,9 +9,11 @@ namespace EduKeeper.Web.Services.Interfaces
 {
     public interface IUserServices
     {
-        bool RegistrateUser(UserModel model);
+        bool Registrate(UserModel model);
 
-        UserModel GetUser(LoginModel model);
+        UserModel SignIn(LoginModel model);
+
+        UserModel GetAuthentificatedUser();
 
         void ChangePicture(HttpPostedFileBase file);
 
@@ -19,7 +21,7 @@ namespace EduKeeper.Web.Services.Interfaces
 
         void AddAuthCookieToResponse(LoginModel model);
 
-        UserModel GetUserFromCookie();
+        int? GetUserIdFromCookie();
 
         void LogVisitedCourses();
     }

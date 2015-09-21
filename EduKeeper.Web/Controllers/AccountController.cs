@@ -10,14 +10,14 @@ namespace EduKeeper.Web.Controllers
     [UserAuthorization] 
     public class AccountController : Controller
     {
-        private IUserServices userServices;
-        private IErrorUtilities errorUtilities;    
+        public IUserServices UserServices;
+        public IErrorUtilities ErrorUtilities;    
         //
         // GET: /Account/
         public AccountController(IUserServices userServices, IErrorUtilities errorUtilities)
         {
-            this.userServices = userServices;
-            this.errorUtilities = errorUtilities;
+            this.UserServices = userServices;
+            this.ErrorUtilities = errorUtilities;
         }
 
         public ActionResult Index()
@@ -38,10 +38,10 @@ namespace EduKeeper.Web.Controllers
             model.Password = Security.ComputeSha256(model.Password);
             if (ModelState.IsValid)
             {
-                if (userServices.RegistrateUser(model))
+                if (UserServices.Registrate(model))
                 {
-                    SessionWrapper.Current.User = model;
-                    userServices.AddAuthCookieToResponse(model);
+                    SessionWrapper.Current.UserId = model.Id;
+                    UserServices.AddAuthCookieToResponse(model);
                     return RedirectToAction("Courses", "Study");
                 }
                 else
@@ -65,12 +65,12 @@ namespace EduKeeper.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var user = userServices.GetUser(model);
+            var user = UserServices.SignIn(model);
 
             if (user != null)
             {
-                SessionWrapper.Current.User = user;
-                userServices.AddAuthCookieToResponse(model);
+                SessionWrapper.Current.UserId = user.Id;
+                UserServices.AddAuthCookieToResponse(model);
                 return RedirectToAction("Courses", "Study");
             }
 
@@ -79,18 +79,15 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult EditProfile()
         {
-            var user = userServices.GetUserFromCookie();
+            var user = UserServices.GetAuthentificatedUser();
             return View(user);
         }
 
         [HttpPost]
         public ActionResult EditProfile(UserModel model)
-        {
-            model.Id = SessionWrapper.Current.User.Id;
-            userServices.ChangePicture(model.PictureToUpdate);
-            
-            var updatedUser = userServices.UpdateUser(model);
-            SessionWrapper.Current.User = updatedUser;
+        {            
+            var updatedUser = UserServices.UpdateUser(model);
+            SessionWrapper.Current.UserId = updatedUser.Id;
             
             return View(updatedUser);
         }
@@ -98,7 +95,7 @@ namespace EduKeeper.Web.Controllers
         [AllowAnonymous]
         public ActionResult Error(ErrorCase errorCase = ErrorCase.UserNotFound)
         {
-            var error = errorUtilities.LogError(errorCase);
+            var error = ErrorUtilities.LogError(errorCase);
 
             return View(error);
         }

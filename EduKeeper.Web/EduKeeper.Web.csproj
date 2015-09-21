@@ -180,7 +180,6 @@
   <ItemGroup>
     <Content Include="App_Data\loading.gif" />
     <Content Include="Content\PagedList.css" />
-    <Content Include="Scripts\courseInfinite.js" />
     <Content Include="Scripts\courseServices.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\jquery.tmpl.min.js" />

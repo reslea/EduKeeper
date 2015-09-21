@@ -5,6 +5,6 @@ namespace EduKeeper.Web.Services.Interfaces
 {
     public interface ISessionWrapper
     {
-        UserModel User { get; set; }
+        int UserId { get; set; }
     }
 }

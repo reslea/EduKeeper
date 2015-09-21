@@ -43,7 +43,7 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public User AuthenticateUser(string email)
+        public int? GetAuthenticatedId(string email)
         {
             if (String.IsNullOrEmpty(email))
                 return null;
@@ -51,7 +51,16 @@ namespace EduKeeper.EntityFramework
             using (var context = new EduKeeperContext())
             {
                 return context.Users
-                    .SingleOrDefault(u => u.Email == email);
+                    .SingleOrDefault(u => u.Email == email).Id;
+            }
+        }
+
+        public User GetAuthenticatedUser(int id)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                return context.Users
+                    .SingleOrDefault(u => u.Id == id);
             }
         }
 
@@ -204,7 +213,7 @@ namespace EduKeeper.EntityFramework
                     .ToPagedList(pageNumber, 10);
 
 
-                List<int> postIds = posts.Select(p => p.Id).ToList();
+                IEnumerable<int> postIds = posts.Select(p => p.Id);
 
                 if (posts.Count == 0)
                     return null;
@@ -213,10 +222,10 @@ namespace EduKeeper.EntityFramework
                     .Where(comment => postIds.Contains(comment.PostId))
                     .Include(comment => comment.Author)
                     .ProjectTo<CommentDTO>()
-                    .OrderByDescending(comment => comment.Id)
                     .GroupBy(comment => comment.PostId, c => c)
-                    .Select(group => group.Take(11))
-                    .ToList();
+                    .Select(group => group
+                        .OrderByDescending(comment => comment.Id)
+                        .Take(11));
 
 
 
@@ -225,6 +234,7 @@ namespace EduKeeper.EntityFramework
                     var post = posts.Single(p => p.Id == item.First().PostId);
 
                     post.Comments = item.Take(10)
+                        .Reverse()
                         .ToList();
 
 

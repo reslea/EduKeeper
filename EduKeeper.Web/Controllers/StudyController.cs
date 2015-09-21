@@ -20,8 +20,7 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult Courses(string searchTerm, int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.User != null ? 
-                SessionWrapper.Current.User.Id : 0;
+            int userId = SessionWrapper.Current.UserId;
 
             var courses = dataAccess.GetCourses(userId, searchTerm, pageNumber);
 
@@ -46,7 +45,7 @@ namespace EduKeeper.Web.Controllers
             else
             {
                 courseServices.AddCourse(model);
-                return RedirectToAction("Courses");
+                return RedirectToAction("Course", new {courseId = model.Id});
             }
         }
 
@@ -59,7 +58,7 @@ namespace EduKeeper.Web.Controllers
 
         public JsonResult GetPosts(int courseId, int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
             string courseTitle = dataAccess.GetCourseTitle(courseId);
 
             var posts = dataAccess.GetPosts(userId, courseId, pageNumber);
@@ -78,21 +77,22 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult Course(int courseId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
 
             var model = courseServices.GetCourse(courseId);
             if (model == null)
                 return RedirectToAction("Error", "Account", new { ErrorCase.CourseNotExist });
 
             model.IsUserJoined = dataAccess.IsPartisipant(userId, courseId);
-            //SessionWrapper.Current.VisitedCourses.Add(courseId);
+            
+            SessionWrapper.Current.VisitedCourses.Add(courseId);
 
             return View(model);
         }
 
         public ActionResult JoinCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
 
             courseServices.JoinCourse(courseId);
             return View();
@@ -100,7 +100,7 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult LeaveCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
 
             courseServices.LeaveCourse(courseId);
             return View();
@@ -126,17 +126,14 @@ namespace EduKeeper.Web.Controllers
 
         public PartialViewResult ViewLeftMenu()
         {
-            var user = SessionWrapper.Current.User;
-            var joinedCourses = dataAccess.GetJoinedCourses(user.Id);
-
-            var model = new LeftMenuModel() { User = user, Courses = joinedCourses};
+            var model = courseServices.GetLeftMenu();
 
             return PartialView("_LeftMenu", model);
         }
 
         public JsonResult GetCourses()
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
             var courses = dataAccess.GetJoinedCourses(userId);
 
             return Json(courses, JsonRequestBehavior.AllowGet);
@@ -144,7 +141,7 @@ namespace EduKeeper.Web.Controllers
 
         public JsonResult GetComments(int postId, int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
 
             var comments = dataAccess.GetComments(userId, postId, pageNumber);
 

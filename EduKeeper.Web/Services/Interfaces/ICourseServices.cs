@@ -19,5 +19,7 @@ namespace EduKeeper.Web.Services.Interfaces
         PostDTO PostMessage(string message, int courseId);
 
         CommentDTO PostComment(string message, int postId);
+
+        LeftMenuModel GetLeftMenu();
     }
 }

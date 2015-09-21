@@ -17,11 +17,13 @@ namespace EduKeeper.Infrastructure
 
         //User GetUser(int id);
         
-        User AuthenticateUser(string email);
+        int? GetAuthenticatedId(string email);
 
         User AuthenticateUser(string email, string password);
 
         User UpdateUserData(User user);
+
+        User GetAuthenticatedUser(int id);
 
         void LogError(Error error);
 

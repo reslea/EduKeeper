@@ -9,7 +9,6 @@ namespace EduKeeper.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/course").Include(
-                "~/Scripts/courseInfinite.js",
                 "~/Scripts/courseServices.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/custom").Include(

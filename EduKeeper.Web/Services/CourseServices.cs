@@ -26,13 +26,13 @@ namespace EduKeeper.Web.Services
 
         public void JoinCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
             dataAccess.JoinCourse(courseId, userId);
         }
 
         public void LeaveCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
             dataAccess.LeaveCourse(courseId, userId);
         }
 
@@ -43,20 +43,34 @@ namespace EduKeeper.Web.Services
 
         public void AddCourse(CourseModel model)
         {
-            int ownerId = SessionWrapper.Current.User.Id;
+            int ownerId = SessionWrapper.Current.UserId;
             dataAccess.AddCourse(ownerId, model.Title, model.Description);
         }
 
         public PostDTO PostMessage(string message, int courseId)
         { 
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
             return dataAccess.PostMessage(message, courseId, userId);
         }
 
         public CommentDTO PostComment(string message, int postId)
         {
-            int userId = SessionWrapper.Current.User.Id;
+            int userId = SessionWrapper.Current.UserId;
             return dataAccess.PostComment(message, postId, userId);
+        }
+
+        public LeftMenuModel GetLeftMenu()
+        {
+            var userId = SessionWrapper.Current.UserId;
+            var joinedCourses = dataAccess.GetJoinedCourses(userId);
+            var user = dataAccess.GetAuthenticatedUser(userId);
+
+            return new LeftMenuModel() 
+            { 
+                User = Mapper.Map<UserModel>(user), 
+                Courses = joinedCourses
+            };
+
         }
     }
 }
