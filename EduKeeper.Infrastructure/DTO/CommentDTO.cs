@@ -20,6 +20,6 @@ namespace EduKeeper.Infrastructure.DTO
 
         public DateTime DateWritten { get; set; }
 
-        public List<Document> Files { get; set; }
+        public List<File> Files { get; set; }
     }
 }

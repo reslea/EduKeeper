@@ -23,6 +23,6 @@ namespace EduKeeper.Infrastructure.DTO
 
         public List<CommentDTO> Comments { get; set; }
 
-        public List<Document> Documents { get; set; }
+        public List<File> Files { get; set; }
     }
 }

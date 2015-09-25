@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EduKeeper.Entities
 {
-    public class Document
+    public class File
     {
         public int Id { get; set; }
 

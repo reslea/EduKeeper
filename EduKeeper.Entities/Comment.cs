@@ -19,7 +19,7 @@ namespace EduKeeper.Entities
 
         public virtual Post Post { get; set; }
 
-        public virtual ICollection<Document> Files { get; set; }
+        public virtual ICollection<File> Files { get; set; }
 
         public DateTime DateWritten { get; set; }
     }

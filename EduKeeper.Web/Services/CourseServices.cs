@@ -58,7 +58,7 @@ namespace EduKeeper.Web.Services
 
             var savedFiles = SaveFiles(courseId, createdPost, files);
 
-            createdPost.Documents = savedFiles;
+            createdPost.Files = savedFiles;
 
             dataAccess.AttachToPost(createdPost.Id, savedFiles);
 
@@ -89,12 +89,12 @@ namespace EduKeeper.Web.Services
             throw new NotImplementedException();
         }
 
-        private List<EduKeeper.Entities.Document> SaveFiles(int courseId, PostDTO createdPost, HttpFileCollectionBase files)
+        private List<EduKeeper.Entities.File> SaveFiles(int courseId, PostDTO createdPost, HttpFileCollectionBase files)
         {
             if (createdPost == null || files.Count == 0)
                 return null;
 
-            var result = new List<EduKeeper.Entities.Document>();
+            var result = new List<EduKeeper.Entities.File>();
 
             foreach (HttpPostedFileBase file in files)
             {
@@ -114,7 +114,7 @@ namespace EduKeeper.Web.Services
 
                 file.SaveAs(path);
 
-                result.Add(new EduKeeper.Entities.Document()
+                result.Add(new EduKeeper.Entities.File()
                 {
                     Name = file.FileName,
                     Path = path,

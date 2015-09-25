@@ -57,6 +57,6 @@ namespace EduKeeper.Infrastructure
 
         IPagedList<PostDTO> GetNews(int userId, int pageNumber);
 
-        void AttachToPost(int postId, List<Document> savedFiles);
+        void AttachToPost(int postId, List<File> savedFiles);
     }
 }

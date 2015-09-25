@@ -410,13 +410,13 @@ namespace EduKeeper.EntityFramework
         }
 
 
-        public void AttachToPost(int postId, List<Document> savedFiles)
+        public void AttachToPost(int postId, List<File> savedFiles)
         {
             using (var context = new EduKeeperContext())
             {
                 foreach (var item in savedFiles)
                 {
-                    context.Documents.Add(item);
+                    context.Files.Add(item);
                 }
 
                 context.SaveChanges();
