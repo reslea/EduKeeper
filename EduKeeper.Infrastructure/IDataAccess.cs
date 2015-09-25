@@ -54,5 +54,9 @@ namespace EduKeeper.Infrastructure
         void LogVisitedCourses(List<int> visitedCourses, int userId);
 
         IPagedList<CommentDTO> GetComments(int userId, int postId, int pageNumber = 1);
+
+        IPagedList<PostDTO> GetNews(int userId, int pageNumber);
+
+        void AttachToPost(int postId, List<Document> savedFiles);
     }
 }

@@ -178,9 +178,9 @@
     <Compile Include="Services\SessionWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\loading.gif" />
+    <Content Include="UsersContent\loading.gif" />
     <Content Include="Content\PagedList.css" />
-    <Content Include="Scripts\courseServices.js" />
+    <Content Include="Scripts\postServices.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\jquery.tmpl.min.js" />
     <Content Include="Scripts\site.js" />
@@ -290,8 +290,11 @@
     <Content Include="Views\Study\Course.cshtml" />
     <Content Include="Views\Study\JoinCourse.cshtml" />
     <Content Include="Views\Study\_LeftMenu.cshtml" />
+    <Content Include="Views\Study\News.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>

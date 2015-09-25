@@ -154,7 +154,8 @@ div.navbar-link {
 div.description {
 }
 
-#courses tr {
+#courses {
+    float: left;
 }
 
 .ui-autocomplete {
@@ -249,6 +250,10 @@ td.action {
         font-weight: bold;
         font-size: 0.6em;
     }
+
+        #posts > .author em {
+            font-weight: initial;
+        }
 
     #posts .post {
         font-size: 0.5em;

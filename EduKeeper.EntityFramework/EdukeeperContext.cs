@@ -27,7 +27,7 @@ namespace EduKeeper.EntityFramework
 
         public DbSet<Event> Events { get; set; }
 
-        public DbSet<File> Files { get; set; }
+        public DbSet<Document> Documents { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

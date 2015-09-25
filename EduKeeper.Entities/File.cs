@@ -6,11 +6,18 @@ using System.Text;
 
 namespace EduKeeper.Entities
 {
-    public class File
+    public class Document
     {
         public int Id { get; set; }
 
+        [StringLength(255), Required]
+        public string Path { get; set; }
+
         [StringLength(100), Required]
-        public string Link { get; set; } //it will be server link, like "~/UsersContent/asd.jpg"
+        public string Name { get; set; }
+
+        public int PostId { get; set; }
+
+        public virtual Post Post { get; set; }
     }
 }

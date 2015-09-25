@@ -1,7 +1,10 @@
 ﻿using EduKeeper.Infrastructure;
+using EduKeeper.Infrastructure.DTO;
 using EduKeeper.Web.Models;
 using EduKeeper.Web.Services;
 using EduKeeper.Web.Services.Interfaces;
+using System;
+using System.Web;
 using System.Web.Mvc;
 
 namespace EduKeeper.Web.Controllers
@@ -107,17 +110,25 @@ namespace EduKeeper.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult PostMessage(string message, int courseId, int pageNumber = 1)
+        public ActionResult PostMessage(string message, int courseId, int pageNumber = 1)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return Json(null, JsonRequestBehavior.AllowGet);
-            
-            var post = courseServices.PostMessage(message, courseId);
+
+            PostDTO post = null;
+            try
+            {
+                post = courseServices.PostMessage(message, courseId, Request.Files);
+            }
+            catch (AccessViolationException)
+            {
+                return RedirectToAction("Error", "Account", new { ErrorCase.UnauthorizedAccess });
+            }
 
             return Json(post, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult PostComment(string message, int postId)
+        public ActionResult PostComment(string message, int postId)
         {
             var comment = courseServices.PostComment(message, postId);
 
@@ -154,6 +165,18 @@ namespace EduKeeper.Web.Controllers
                 comments.HasNextPage
             };
 
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult News(int pageNumber = 1)
+        {
+            return View();
+        }
+
+        public ActionResult GetNews(int pageNumber = 1)
+        {
+            int userId = SessionWrapper.Current.UserId;
+            var model = dataAccess.GetNews(userId, pageNumber);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
     }

@@ -85,7 +85,7 @@ namespace EduKeeper.Web.Controllers
 
         [HttpPost]
         public ActionResult EditProfile(UserModel model)
-        {            
+        {
             var updatedUser = UserServices.UpdateUser(model);
             SessionWrapper.Current.UserId = updatedUser.Id;
             

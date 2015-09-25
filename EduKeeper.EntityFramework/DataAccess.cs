@@ -14,13 +14,17 @@ namespace EduKeeper.EntityFramework
 {
     public class DataAccess : IDataAccess
     {
+        //Too many methods in one class?
+        //single responsibility ? 
+
         public bool RegistrateUser(User user)
         {
-            user.GroupId = 201;
             using (var context = new EduKeeperContext())
             {
                 user.RegDate = DateTime.Now;
 
+                //check email here or just catch exception from context.SaveChanges() 
+                //cause email has unique constraint?
                 if (!context.Users.Any(u => u.Email == user.Email))
                 {
                     context.Users.Add(user);
@@ -132,13 +136,11 @@ namespace EduKeeper.EntityFramework
                 var users = new List<User>();
                 users.Add(user);
 
-                var course = new Course()
-                {
-                    Owner = user,
-                    Title = title,
-                    Description = description,
-                    Users = users
-                };
+                var course = context.Courses.Create();
+                course.OwnerId = ownerId;
+                course.Title = title;
+                course.Description = description;
+                course.Users = users;
 
                 context.Courses.Add(course);
                 context.SaveChanges();
@@ -157,12 +159,16 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
+                //maybe there is the way to do this in one query but I didn`n find it
+
                 Course course = context.Courses.SingleOrDefault(c => c.Id == courseId);
                 User user = context.Users.Single(u => u.Id == userId);
 
                 if (course != null)
                 {
                     course.Users.Add(user);
+                    //im not sure, it needs to be tested
+                    //course.Users.Add(new User() { Id = userId });
                     context.SaveChanges();
                 }
             }
@@ -172,6 +178,7 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
+                //maybe there is the way to do this in one query but I didn`n find it
                 Course course = context.Courses.SingleOrDefault(c => c.Id == courseId);
                 User user = context.Users.Single(u => u.Id == userId);
 
@@ -241,7 +248,7 @@ namespace EduKeeper.EntityFramework
                     if (item.Count() == 11)
                         post.IsHasMore = true;
                 }
-                return posts;
+                return  posts;
             }
         }
 
@@ -257,6 +264,10 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
+                if (!context.Courses.Any(c => c.Id == courseId
+                    && c.Users.Any(u => u.Id == userId)))
+                    throw new AccessViolationException("user has no access to this course");
+
                 var post = context.Posts.Create();
 
                 post.Message = message;
@@ -264,12 +275,8 @@ namespace EduKeeper.EntityFramework
                 post.CourseId = courseId;
                 post.DateWritten = DateTime.Now;
 
-                if (context.Courses.Any(c => c.Id == courseId
-                    && c.Users.Any(u => u.Id == userId)))
-                {
-                    context.Posts.Add(post);
-                    context.SaveChanges();
-                }
+                context.Posts.Add(post);
+                context.SaveChanges();
 
                 return Mapper.Map<PostDTO>(post);
             }
@@ -297,15 +304,45 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public IPagedList<PostDTO> GetFeed(int userId, int pageNumber)
+        public IPagedList<PostDTO> GetNews(int userId, int pageNumber)
         {
+            //!!!! NOTHING CALLS THIS VOID, FEED PAGE IS ON DEVELOPING
+            /*
+             *  should search last posts and posts with last comments, 
+             *  then group them for getting 30 new posts (actually new posts or posts with new comments) 
+             */
             using (var context = new EduKeeperContext())
             {
                 return context.Posts
-                        .Where(post => post.Course.Users.Any(user => user.Id == userId))
-                        .OrderBy(post => post.DateWritten)
-                        .ProjectTo<PostDTO>()
-                        .ToPagedList(pageNumber, 20);
+                    .Where(post => post.Course.Users.Any(user => user.Id == userId))
+                    .OrderByDescending(post => post.Id)
+                    .Select(post => new PostDTO()
+                    {
+                        AuthorId = post.AuthorId.Value,
+                        AuthorName = post.Author.FirstName + " " + post.Author.LastName,
+                        CourseId = post.CourseId,
+                        Id = post.Id,
+                        Message = post.Message,
+                        Comments = post.Comments
+                        .OrderByDescending(comment => comment.Id)
+                        .Select(comment => new CommentDTO()
+                        {
+                            AuthorId = comment.AuthorId.Value,
+                            AuthorName = comment.Author.FirstName + " " + comment.Author.LastName,
+                            DateWritten = comment.DateWritten,
+                            Id = comment.Id,
+                            Message = comment.Message,
+                            PostId = comment.PostId
+
+                        })
+                        .Take(11)
+                        .OrderBy(comment => comment.Id)
+                        .ToList()
+
+                    })
+                    .ToPagedList(pageNumber, 30);
+
+
             }
         }
 
@@ -357,18 +394,32 @@ namespace EduKeeper.EntityFramework
 
         public IPagedList<CommentDTO> GetComments(int userId, int postId, int pageNumber = 1)
         {
-            using(var context = new EduKeeperContext())
+            using (var context = new EduKeeperContext())
             {
                 //or maybe just get courseId with one of parameters
-            if (!context.Users.Any(user => user.Id == userId &&
-                user.Courses.Any(course => course.Messages.Any(p => p.Id == postId))))
-                return null;
+                if (!context.Users.Any(user => user.Id == userId &&
+                    user.Courses.Any(course => course.Messages.Any(p => p.Id == postId))))
+                    return null;
 
-            return context.Comments
-                    .Where(comment => comment.Post.Id == postId)
-                    .OrderByDescending(comment => comment.Id)
-                    .ProjectTo<CommentDTO>()
-                    .ToPagedList(pageNumber, 10);
+                return context.Comments
+                        .Where(comment => comment.Post.Id == postId)
+                        .OrderByDescending(comment => comment.Id)
+                        .ProjectTo<CommentDTO>()
+                        .ToPagedList(pageNumber, 10);
+            }
+        }
+
+
+        public void AttachToPost(int postId, List<Document> savedFiles)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                foreach (var item in savedFiles)
+                {
+                    context.Documents.Add(item);
+                }
+
+                context.SaveChanges();
             }
         }
     }

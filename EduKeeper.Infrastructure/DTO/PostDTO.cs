@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EduKeeper.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +18,11 @@ namespace EduKeeper.Infrastructure.DTO
 
         public string Message { get; set; }
 
+        public bool IsHasMore { get; set; }
+        public DateTime DateWritten { get; set; }
+
         public List<CommentDTO> Comments { get; set; }
 
-
-        public bool IsHasMore { get; set; }
+        public List<Document> Documents { get; set; }
     }
 }

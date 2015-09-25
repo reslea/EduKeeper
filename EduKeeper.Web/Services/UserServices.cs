@@ -50,14 +50,14 @@ namespace EduKeeper.Web.Services
         public void ChangePicture(HttpPostedFileBase file)
         {
             if (file == null) return;
+            if (file.ContentLength > 1024 * 1024) return; // 1 MB
 
-            try
-            {
-                string filename = Path.GetFileName(file.FileName);
-                string strLocation = HttpContext.Current.Server.MapPath("~/UsersContent/");
-                file.SaveAs(strLocation + @"\" + SessionWrapper.Current.UserId + ".jpg");
-            }
-            catch (FormatException) { }
+            string strLocation = HttpContext.Current.Server.MapPath("~/UsersContent/");
+            int userId = SessionWrapper.Current.UserId;
+
+            string filePath = String.Format("{0}\\{1}.jpg", strLocation, userId);
+
+            file.SaveAs(filePath);
         }
 
         public UserModel UpdateUser(UserModel model)
@@ -72,10 +72,10 @@ namespace EduKeeper.Web.Services
         public void AddAuthCookieToResponse(LoginModel model)
         {
             var authCookie = FormsAuthentication.GetAuthCookie(model.Email, model.RememberMe);
-            
-            if(model.RememberMe)
-                authCookie.Expires = DateTime.UtcNow.AddMonths(3);
-            
+
+            if (model.RememberMe)
+                authCookie.Expires = DateTime.UtcNow.AddYears(1);
+
             HttpContext.Current.Response.Cookies.Add(authCookie);
         }
 

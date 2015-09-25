@@ -5,7 +5,7 @@
 }
 @section Scripts
 {
-    <script src="@Url.Content("~/Scripts/courseServices.js")"></script>
+    <script src="@Url.Content("~/Scripts/postServices.js")"></script>
 }
 <script id="postsTemplate" type="text/x-jquery-tmpl">
     <li class="list-group-item">
@@ -18,7 +18,7 @@
         </div>
         <div class="post-content">
             <div class="author">
-                ${AuthorName}
+                ${AuthorName} <em>at ${getDate(DateWritten)}</em>
             </div>
             <div class="post">
                 ${Message}
@@ -29,11 +29,11 @@
             {{if IsHasMore}}
             <input type="button" id="${createInputId('loadMore', Id)}" class="load-more btn btn-default" value="load previous comments" onclick="getComments(${Id})" />
             <div id="${createInputId('loading', Id)}" style="display:none">
-                <img src="@Url.Content("~/App_Data/loading.gif")" alt="loading..." />
+                <img src="/UsersContent/loading.gif" alt="loading..." />
             </div>
             {{/if IsHasMore}}
             <ul class="list-group comments" id=${Id}>
-                {{if Comments != null}}
+                {{if Comments.reverse() != null}}
                 {{each Comments}}
                 <li class="list-group-item">
                     <div class="">
@@ -47,7 +47,7 @@
                     </div>
                     <div class="comment-content">
                         <div class="comment-author">
-                            ${$value.AuthorName} <em>${getDate($value.DateWritten)}</em>
+                            ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
                         </div>
                         <div class="post">
                             ${$value.Message}
@@ -64,6 +64,9 @@
                 </div>
                 <div class="comment-buttons">
                     <input type="button" name="postComment" value="Comment" onclick="postComment(${Id})" class="btn btn-default" />
+                </div class="comment-buttons">
+                <div class="comment-buttons">
+                    <input type="file" name="uploadFile" value="File upload" class="btn btn-default" onchange="uploadFile(${Id}, this.files)" />
                 </div>
             </div>
         </div>
@@ -123,7 +126,7 @@
         <ul class="list-group" id="posts"></ul>
     </div>
     <div id="load" style="display:none">
-        <img src="@Url.Content("~/App_Data/loading.gif")" alt="loading..." />
+        <img src="/UsersContent/loading.gif" alt="loading..." />
     </div>
 </div>
 

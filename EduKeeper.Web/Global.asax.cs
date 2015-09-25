@@ -39,9 +39,11 @@ namespace EduKeeper
 
         protected void Session_End(object sender, EventArgs e)
         {
-            var x = SessionWrapper.Current == null ? 
-                null : SessionWrapper.Current.VisitedCourses;
-            Session.Abandon();
+            var wrapper = SessionWrapper.GetSessionWrapper(this);
+
+            wrapper.UserId.ToString();
+            //var x = SessionWrapper.Current == null ?
+            //    null : SessionWrapper.Current.VisitedCourses;
         }
     }
 }

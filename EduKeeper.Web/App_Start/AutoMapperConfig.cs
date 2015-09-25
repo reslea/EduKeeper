@@ -17,9 +17,7 @@ namespace EduKeeper.Web
             Mapper.CreateMap<Post, PostDTO>()
                 .ForMember(d => d.AuthorName, opt => opt
                     .MapFrom(s => s.Author.FirstName + " " + s.Author.LastName))
-
-                .ForMember(d => d.AuthorId, opt => opt.MapFrom(s => s.Author.Id))
-                .ForMember(d => d.Comments, opt => opt.Ignore());
+                .ForMember(d => d.AuthorId, opt => opt.MapFrom(s => s.Author.Id));
 
             Mapper.CreateMap<Comment, CommentDTO>()
                 .ForMember(d => d.AuthorName, opt => opt

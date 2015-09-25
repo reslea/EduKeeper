@@ -157,3 +157,7 @@ function postComment(id){
         $("#text" + id).focus();
     });
 }
+
+function uploadFile(postId, files) {
+
+}

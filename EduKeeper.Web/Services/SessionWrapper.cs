@@ -27,9 +27,6 @@ namespace EduKeeper.Web.Services
         {
             get
             {
-                if (HttpContext.Current == null)
-                    return null;
-
                 SessionWrapper session = (SessionWrapper)HttpContext.Current.Session["_SessionWrapper"];
 
                 if (session == null)
@@ -40,6 +37,11 @@ namespace EduKeeper.Web.Services
                 }
                 return session;
             }
+        }
+
+        public static SessionWrapper GetSessionWrapper(HttpApplication app)
+        {
+            return (SessionWrapper)app.Session["_SessionWrapper"];
         }
     }
 }
