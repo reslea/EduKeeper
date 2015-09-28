@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="DTO\CommentDTO.cs" />
     <Compile Include="DTO\CourseDTO.cs" />
+    <Compile Include="DTO\FileDTO.cs" />
     <Compile Include="ErrorCase.cs" />
     <Compile Include="ErrorDescriptionAttribute.cs" />
     <Compile Include="IDataAccess.cs" />

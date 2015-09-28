@@ -56,11 +56,11 @@ namespace EduKeeper.Web.Services
             int userId = SessionWrapper.Current.UserId;
             var createdPost = dataAccess.PostMessage(message, courseId, userId);
 
-            var savedFiles = SaveFiles(courseId, createdPost, files);
-
-            createdPost.Files = savedFiles;
+            var savedFiles = FilesToSave(courseId, createdPost, files);
 
             dataAccess.AttachToPost(createdPost.Id, savedFiles);
+
+            createdPost.Files = Mapper.Map<List<FileDTO>>(savedFiles);
 
             return createdPost;
         }
@@ -84,41 +84,38 @@ namespace EduKeeper.Web.Services
             };
         }
 
-        public object AddFile(int postId, HttpFileCollectionBase files)
-        {
-            throw new NotImplementedException();
-        }
-
-        private List<EduKeeper.Entities.File> SaveFiles(int courseId, PostDTO createdPost, HttpFileCollectionBase files)
+        private List<EduKeeper.Entities.File> FilesToSave(int courseId, PostDTO createdPost, HttpFileCollectionBase files)
         {
             if (createdPost == null || files.Count == 0)
                 return null;
 
             var result = new List<EduKeeper.Entities.File>();
 
-            foreach (HttpPostedFileBase file in files)
+            for (int i = 0; i < files.Count; i++)
             {
-                if (file == null) continue;
-                if (file.ContentLength > 100 * 1024 * 1024) continue; // 100 MB
+                if (files[i] == null) continue;
+                if (files[i].ContentLength > 100 * 1024 * 1024) continue; // 100 MB
 
                 string storageDirectory = String.Empty;
                 string extention = String.Empty;
                 string path = String.Empty;
-                string guidName = Guid.NewGuid().ToString();
+                Guid identifier = Guid.NewGuid();
+                string guidName = identifier.ToString();
 
                 string courseDirectory = GetCourseDirectory(courseId);
 
-                extention = Path.GetExtension(file.FileName);
+                extention = Path.GetExtension(files[i].FileName);
 
                 path = String.Concat(courseDirectory, guidName, extention);
 
-                file.SaveAs(path);
+                files[i].SaveAs(path);
 
                 result.Add(new EduKeeper.Entities.File()
                 {
-                    Name = file.FileName,
+                    Name = files[i].FileName,
                     Path = path,
-                    PostId = createdPost.Id
+                    PostId = createdPost.Id,
+                    Identifier = identifier
                 });
             }
             return result;
@@ -147,7 +144,5 @@ namespace EduKeeper.Web.Services
 
             return courseDirectory;
         }
-
-
     }
 }

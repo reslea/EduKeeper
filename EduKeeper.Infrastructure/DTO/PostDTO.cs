@@ -19,10 +19,11 @@ namespace EduKeeper.Infrastructure.DTO
         public string Message { get; set; }
 
         public bool IsHasMore { get; set; }
+
         public DateTime DateWritten { get; set; }
 
         public List<CommentDTO> Comments { get; set; }
 
-        public List<File> Files { get; set; }
+        public List<FileDTO> Files { get; set; }
     }
 }

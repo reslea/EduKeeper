@@ -12,8 +12,8 @@
         <div class="avatar">
             <div>
                 <img src="/UsersContent/${AuthorId}.jpg"
-                        alt="${AuthorName}"
-                        class="img-responsive photo" />
+                     alt="${AuthorName}"
+                     class="img-responsive photo" />
             </div>
         </div>
         <div class="post-content">
@@ -33,29 +33,29 @@
             </div>
             {{/if IsHasMore}}
             <ul class="list-group comments" id=${Id}>
-                {{if Comments.reverse() != null}}
-                {{each Comments}}
-                <li class="list-group-item">
-                    <div class="">
-                        <div class="avatar">
-                            <div>
-                                <img src="/UsersContent/${$value.AuthorId}.jpg"
-                                     alt="${$value.AuthorName}"
-                                     class="img-responsive photo" />
+                {{if Comments != null}}
+                    {{each Comments}}
+                    <li class="list-group-item">
+                        <div class="">
+                            <div class="avatar">
+                                <div>
+                                    <img src="/UsersContent/${$value.AuthorId}.jpg"
+                                         alt="${$value.AuthorName}"
+                                         class="img-responsive photo" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="comment-content">
-                        <div class="comment-author">
-                            ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
+                        <div class="comment-content">
+                            <div class="comment-author">
+                                ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
+                            </div>
+                            <div class="post">
+                                ${$value.Message}
+                            </div>
                         </div>
-                        <div class="post">
-                            ${$value.Message}
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </li>
-                {{/each}}
+                        <div class="clearfix"></div>
+                    </li>
+                    {{/each}}
                 {{/if}}
             </ul>
             <div class="comment">
@@ -64,13 +64,31 @@
                 </div>
                 <div class="comment-buttons">
                     <input type="button" name="postComment" value="Comment" onclick="postComment(${Id})" class="btn btn-default" />
-                </div class="comment-buttons">
-                <div class="comment-buttons">
                     <input type="file" name="uploadFile" value="File upload" class="btn btn-default" onchange="uploadFile(${Id}, this.files)" />
                 </div>
             </div>
         </div>
         <div class="clearfix" />
+        <div class="files-section">
+            <ul class="list-group">
+                {{if Files != null}}
+                    {{each Files}}
+                        <li class="list-group-item">
+                            {{if isImage($value.Extention)}}
+                                Image
+                            {{/if}}
+
+                            {{else}}
+                                {{if isGoogleDocument($value.Extention)}}
+                                    GoogleDocumentLink
+                                {{/if}}
+                                FileLink
+                            {{/else}}
+                        </li>
+                    {{/each}}
+                {{/if}}
+            </ul>
+        </div>
     </li>
 </script>
 
@@ -121,7 +139,11 @@
         <div class="new-post">
             <textarea class="form-control" id="postMessage"></textarea>
             <input type="hidden" name="courseId" id="courseId" value="@Model.Id" />
-            <input type="button" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" onclick="postMessage()" />
+            
+            <div class="post-buttons">
+                <input type="button" name="name" value="Post" class="btn btn-lg btn-primary" id="btn-post" onclick="postMessage()" />
+                <input type="file" name="uploadFile" value="File upload" class="btn btn-default" multiple id=@("files" + @Model.Id.ToString()) />
+            </div>
         </div>
         <ul class="list-group" id="posts"></ul>
     </div>

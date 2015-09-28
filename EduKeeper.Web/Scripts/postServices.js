@@ -113,25 +113,35 @@ function getDate(jsonDateString) {
     var date = new Date(parseInt(jsonDateString.replace('/Date(', '')));
 
     var minutes = "";
-    if(date.getMinutes() < 10)
+    if (date.getMinutes() < 10)
         minutes = "0" + date.getMinutes();
     else minutes = date.getMinutes();
 
     return date.getDay() + " " + month[date.getMonth()] + " at " + date.getHours() + ":" + minutes;
 }
 
-function createInputId(text, id){
+function createInputId(text, id) {
     return text + id;
 }
 
-function postMessage(){
-    var options ={
-        url: '/Study/PostMessage',
-        type: "post",
-        data: {
-            message: $("#postMessage").val(),
-            courseId: $("#courseId").val()
+function postMessage() {
+    var courseId = $("#courseId").val();
+    var files = $("#files" + courseId)[0].files;
+    var data = new FormData();
+
+    if (files.length > 0) {
+        for (var i = 0; i < files.length; i++) {
+            data.append(files[i].name, files[i]);
         }
+    }
+
+    data.append("message", $("#postMessage").val());
+    data.append("courseId", courseId);
+
+    var options = {
+        url: '/Study/PostMessage',
+        method: "post", processData: false, contentType: false,
+        data: data
     }
 
     jQuery.ajax(options).done(function (data) {
@@ -141,8 +151,8 @@ function postMessage(){
     });
 }
 
-function postComment(id){
-    var options ={
+function postComment(id) {
+    var options = {
         url: '/Study/PostComment',
         type: "post",
         data: {
@@ -156,8 +166,4 @@ function postComment(id){
         $("#text" + id).val("");
         $("#text" + id).focus();
     });
-}
-
-function uploadFile(postId, files) {
-
 }

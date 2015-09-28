@@ -71,12 +71,7 @@ namespace EduKeeper.Web.Services
 
         public void AddAuthCookieToResponse(LoginModel model)
         {
-            var authCookie = FormsAuthentication.GetAuthCookie(model.Email, model.RememberMe);
-
-            if (model.RememberMe)
-                authCookie.Expires = DateTime.UtcNow.AddYears(1);
-
-            HttpContext.Current.Response.Cookies.Add(authCookie);
+            FormsAuthentication.SetAuthCookie(model.Email, model.RememberMe);
         }
 
         public int? GetUserIdFromCookie()

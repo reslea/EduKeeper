@@ -36,20 +36,16 @@ namespace EduKeeper.Web.Controllers
         public ActionResult Registration(UserModel model)
         {
             model.Password = Security.ComputeSha256(model.Password);
-            if (ModelState.IsValid)
-            {
-                if (UserServices.Registrate(model))
-                {
-                    SessionWrapper.Current.UserId = model.Id;
-                    UserServices.AddAuthCookieToResponse(model);
-                    return RedirectToAction("Courses", "Study");
-                }
-                else
-                {
-                    return RedirectToAction("Error", "Account", new { errorCase = ErrorCase.DuplicateEmail });
-                }
-            }
-            return View();
+
+            if (!ModelState.IsValid)
+                return View();
+
+            if (!UserServices.Registrate(model))                
+                return RedirectToAction("Error", "Account", new { errorCase = ErrorCase.DuplicateEmail });
+                
+            SessionWrapper.Current.UserId = model.Id;
+            UserServices.AddAuthCookieToResponse(model);
+            return RedirectToAction("Courses", "Study");
         }
 
         [AllowAnonymous]
@@ -67,14 +63,12 @@ namespace EduKeeper.Web.Controllers
 
             var user = UserServices.SignIn(model);
 
-            if (user != null)
-            {
-                SessionWrapper.Current.UserId = user.Id;
-                UserServices.AddAuthCookieToResponse(model);
-                return RedirectToAction("Courses", "Study");
-            }
+            if (user == null)
+                return RedirectToAction("Error", new { errorCase = ErrorCase.InvalidUserData });
 
-            return RedirectToAction("Error", new { errorCase = ErrorCase.InvalidUserData });
+            SessionWrapper.Current.UserId = user.Id;
+            UserServices.AddAuthCookieToResponse(model);
+            return RedirectToAction("Courses", "Study");
         }
 
         public ActionResult EditProfile()

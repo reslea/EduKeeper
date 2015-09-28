@@ -30,9 +30,8 @@ namespace EduKeeper.EntityFramework
                     context.Users.Add(user);
                 }
                 else
-                {
                     return false;
-                }
+
                 context.SaveChanges();
                 return true;
             }
@@ -420,6 +419,26 @@ namespace EduKeeper.EntityFramework
                 }
 
                 context.SaveChanges();
+            }
+        }
+
+
+        public FileDTO GetFile(int userId, Guid fileIdentifier)
+        {
+            using (var context = new EduKeeperContext())
+            {
+                if (!context.Users.Any(user => user.Courses
+                    .Any(course => course.Messages
+                        .Any(post => post.Files
+                            .Any(file => file.Identifier == fileIdentifier)))))
+                {
+                    return null;
+                }
+
+                File loadedFile = context.Files
+                    .Single(file => file.Identifier == fileIdentifier);
+
+                return Mapper.Map<FileDTO>(loadedFile);
             }
         }
     }

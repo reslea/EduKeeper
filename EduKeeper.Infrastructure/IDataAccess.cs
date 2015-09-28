@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PagedList;
 using System.Linq;
 using EduKeeper.Infrastructure.DTO;
+using System;
 
 namespace EduKeeper.Infrastructure
 {
@@ -58,5 +59,7 @@ namespace EduKeeper.Infrastructure
         IPagedList<PostDTO> GetNews(int userId, int pageNumber);
 
         void AttachToPost(int postId, List<File> savedFiles);
+
+        FileDTO GetFile(int userId, Guid fileIdentifier);
     }
 }

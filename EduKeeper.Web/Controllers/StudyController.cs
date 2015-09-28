@@ -4,6 +4,7 @@ using EduKeeper.Web.Models;
 using EduKeeper.Web.Services;
 using EduKeeper.Web.Services.Interfaces;
 using System;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 
@@ -110,7 +111,7 @@ namespace EduKeeper.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostMessage(string message, int courseId, int pageNumber = 1)
+        public ActionResult PostMessage(string message, int courseId)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return Json(null, JsonRequestBehavior.AllowGet);
@@ -168,7 +169,7 @@ namespace EduKeeper.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult News(int pageNumber = 1)
+        public ActionResult News()
         {
             return View();
         }

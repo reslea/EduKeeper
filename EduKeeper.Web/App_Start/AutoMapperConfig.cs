@@ -25,6 +25,10 @@ namespace EduKeeper.Web
 
                 .ForMember(d => d.AuthorId, opt => opt.MapFrom(s => s.Author.Id))
                 .ForMember(d => d.Files, opt => opt.Ignore());
+
+            Mapper.CreateMap<File, FileDTO>()
+                .ForMember(d => d.Extention, 
+                opt => opt.Ignore());
         }
     }
 }

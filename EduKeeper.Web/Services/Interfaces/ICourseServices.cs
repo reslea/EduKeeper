@@ -1,6 +1,8 @@
 ﻿using EduKeeper.Infrastructure.DTO;
 using EduKeeper.Web.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 
 namespace EduKeeper.Web.Services.Interfaces
@@ -22,7 +24,5 @@ namespace EduKeeper.Web.Services.Interfaces
         CommentDTO PostComment(string message, int postId);
 
         LeftMenuModel GetLeftMenu();
-
-        object AddFile(int postId, System.Web.HttpFileCollectionBase files);
     }
 }
