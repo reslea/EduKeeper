@@ -8,23 +8,17 @@ namespace EduKeeper.Web
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/course").Include(
+            bundles.Add(new ScriptBundle("~/bundles/site").Include(
+                "~/Scripts/site.js",
                 "~/Scripts/postServices.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/custom").Include(
-                "~/Scripts/site.js",
-                "~/Scripts/jquery.tmpl.js",
-                "~/Scripts/jquery.tmpl.min.js"));
-
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
-                        "~/Scripts/jquery-ui-{version}.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.unobtrusive*",
-                        "~/Scripts/jquery.validate*"));
+                "~/Scripts/jquery-{version}.js",
+                "~/Scripts/jquery.tmpl.js",
+                "~/Scripts/jquery.tmpl.min.js",
+                "~/Scripts/jquery-ui-{version}.js",
+                "~/Scripts/jquery.unobtrusive*",
+                "~/Scripts/jquery.validate*"));
 
             bundles.Add(new ScriptBundle("~/bundlers/bootstrap").Include(
                         "~/Scripts/bootstrap.js",

@@ -1,0 +1,77 @@
+﻿<li class="list-group-item">
+    <div class="avatar">
+        <div>
+            <img src="/UsersContent/${AuthorId}.jpg"
+                    alt="${AuthorName}"
+                    class="img-responsive photo" />
+        </div>
+    </div>
+    <div class="post-content">
+        <div class="author">
+            ${AuthorName} <em>at ${getDate(DateWritten)}</em>
+        </div>
+        <div class="post">
+            ${Message}
+        </div>
+
+        <div class="files-section">
+            {{if Files.length != 0}}
+            <ul class="list-group">
+                {{each Files}}
+                <li>
+                    <a href="/File/DownloadFile?fileIdentifier=${$value.Identifier}">${$value.Name}</a>
+                </li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </div>
+    </div>
+
+    <div class="clearfix" />
+
+    <div class="comment-section">
+        {{if IsHasMore}}
+        <input type="button" id="${createInputId('loadMore', Id)}" class="load-more btn btn-default" value="load previous comments" onclick="getComments(${Id})" />
+        <div id="${createInputId('loading', Id)}" style="display:none">
+            <img src="/UsersContent/loading.gif" alt="loading..." />
+        </div>
+        {{/if IsHasMore}}
+        {{if Comments != null}}
+            <ul class="list-group comments" id=${Id}>
+                {{each Comments}}
+                <li class="list-group-item">
+                    <div class="">
+                        <div class="avatar">
+                            <div>
+                                <img src="/UsersContent/${$value.AuthorId}.jpg"
+                                        alt="${$value.AuthorName}"
+                                        class="img-responsive photo" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-author">
+                            ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
+                        </div>
+                        <div class="post">
+                            ${$value.Message}
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+                {{/each}}
+            </ul>
+        {{/if}}
+        <div class="comment">
+            <div class="comment-text">
+                <textarea id="${createInputId('text', Id)}" class="form-control" />
+            </div>
+            <div class="comment-buttons">
+                <input type="button" name="postComment" value="Comment" onclick="postComment(${Id})" class="btn btn-default" />
+                <input type="file" name="uploadFile" value="File upload" class="btn btn-default" multiple onchange="uploadFile(${Id}, this.files)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix" />
+</li>

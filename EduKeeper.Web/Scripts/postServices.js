@@ -7,11 +7,15 @@ var isLoadingComments = true;
 var isHasMorePosts = true;
 var isHasMoreComments = true;
 
-$(window).on('scroll', function () {
-    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-        getPage();
-    }
-}).scroll();
+$(document).ready(function () {
+
+    $(window).on('scroll', function () {
+        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+            getPage();
+        }
+    }).scroll();
+
+});
 
 function getPage() {
     if (!isLoadingPosts || !isHasMorePosts)
@@ -43,7 +47,9 @@ function getPage() {
             isHasMorePosts = false;
 
         isLoadingPosts = true;
-        $("#postsTemplate").tmpl(data.Posts).appendTo("#posts");
+        $.get("/Views/Templates/PostsTemplate.html", function (postsTemplate) {
+            $.tmpl(postsTemplate, data.Posts).appendTo("#posts");
+        });
         pageNumber++;
 
         data.Posts.forEach(function (element) {
@@ -79,7 +85,9 @@ function getComments(commentSectionId) {
 
         var reversedComments = data.comments.reverse();
 
-        $("#commentTemplate").tmpl(reversedComments).prependTo('#' + commentSectionId);
+        $.get("/Views/Templates/CommentsTemplate.html", function (commentsTemplate) {
+            $.tmpl(commentsTemplate, reversedComments).prependTo('#' + commentSectionId);
+        });
         isLoadingComments = true;
         $("#loading" + commentSectionId).hide();
 

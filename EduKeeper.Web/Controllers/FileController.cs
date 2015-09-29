@@ -1,4 +1,5 @@
 ﻿using EduKeeper.Web.Services.Interfaces;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;

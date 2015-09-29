@@ -10,14 +10,13 @@ namespace EduKeeper.Web.Controllers
     [UserAuthorization] 
     public class AccountController : Controller
     {
-        public IUserServices UserServices;
-        public IErrorUtilities ErrorUtilities;    
-        //
-        // GET: /Account/
+        private IUserServices userServices;
+        private IErrorUtilities errorUtilities;
+
         public AccountController(IUserServices userServices, IErrorUtilities errorUtilities)
         {
-            this.UserServices = userServices;
-            this.ErrorUtilities = errorUtilities;
+            this.userServices = userServices;
+            this.errorUtilities = errorUtilities;
         }
 
         public ActionResult Index()
@@ -40,11 +39,11 @@ namespace EduKeeper.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            if (!UserServices.Registrate(model))                
+            if (!userServices.Registrate(model))                
                 return RedirectToAction("Error", "Account", new { errorCase = ErrorCase.DuplicateEmail });
                 
             SessionWrapper.Current.UserId = model.Id;
-            UserServices.AddAuthCookieToResponse(model);
+            userServices.AddAuthCookieToResponse(model);
             return RedirectToAction("Courses", "Study");
         }
 
@@ -61,26 +60,26 @@ namespace EduKeeper.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var user = UserServices.SignIn(model);
+            var user = userServices.SignIn(model);
 
             if (user == null)
                 return RedirectToAction("Error", new { errorCase = ErrorCase.InvalidUserData });
 
             SessionWrapper.Current.UserId = user.Id;
-            UserServices.AddAuthCookieToResponse(model);
+            userServices.AddAuthCookieToResponse(model);
             return RedirectToAction("Courses", "Study");
         }
 
         public ActionResult EditProfile()
         {
-            var user = UserServices.GetAuthentificatedUser();
+            var user = userServices.GetAuthentificatedUser();
             return View(user);
         }
 
         [HttpPost]
         public ActionResult EditProfile(UserModel model)
         {
-            var updatedUser = UserServices.UpdateUser(model);
+            var updatedUser = userServices.UpdateUser(model);
             SessionWrapper.Current.UserId = updatedUser.Id;
             
             return View(updatedUser);
@@ -89,7 +88,7 @@ namespace EduKeeper.Web.Controllers
         [AllowAnonymous]
         public ActionResult Error(ErrorCase errorCase = ErrorCase.UserNotFound)
         {
-            var error = ErrorUtilities.LogError(errorCase);
+            var error = errorUtilities.LogError(errorCase);
 
             return View(error);
         }

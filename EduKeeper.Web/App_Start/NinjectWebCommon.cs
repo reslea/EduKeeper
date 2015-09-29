@@ -72,6 +72,7 @@ namespace EduKeeper.Web.App_Start
             kernel.Bind<ISessionWrapper>().To<SessionWrapper>();
             kernel.Bind<IDataAccess>().To<DataAccess>();
             kernel.Bind<ICourseServices>().To<CourseServices>();
+            kernel.Bind<IFileServices>().To<FileServices>();
         }        
     }
 }
