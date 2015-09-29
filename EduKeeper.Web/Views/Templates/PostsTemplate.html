@@ -2,8 +2,8 @@
     <div class="avatar">
         <div>
             <img src="/UsersContent/${AuthorId}.jpg"
-                    alt="${AuthorName}"
-                    class="img-responsive photo" />
+                 alt="${AuthorName}"
+                 class="img-responsive photo" />
         </div>
     </div>
     <div class="post-content">
@@ -14,12 +14,24 @@
             ${Message}
         </div>
 
+        <div class="clearfix"></div>
+
         <div class="files-section">
             {{if Files.length != 0}}
             <ul class="list-group">
                 {{each Files}}
-                <li>
-                    <a href="/File/DownloadFile?fileIdentifier=${$value.Identifier}">${$value.Name}</a>
+                <li class="file-item">
+                    <div>
+                        {{if canOpenWithGoogle($value.Extention)}}
+                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                        {{/if}}
+                        <div>
+                            <a href="/File/DownloadFile?fileIdentifier=${$value.Identifier}">
+                                <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                                <span class="file-name">${$value.Name} </span>
+                            </a>
+                        </div>
+                    </div>
                 </li>
                 {{/each}}
             </ul>
@@ -37,30 +49,30 @@
         </div>
         {{/if IsHasMore}}
         {{if Comments != null}}
-            <ul class="list-group comments" id=${Id}>
-                {{each Comments}}
-                <li class="list-group-item">
-                    <div class="">
-                        <div class="avatar">
-                            <div>
-                                <img src="/UsersContent/${$value.AuthorId}.jpg"
-                                        alt="${$value.AuthorName}"
-                                        class="img-responsive photo" />
-                            </div>
+        <ul class="list-group comments" id=${Id}>
+            {{each Comments}}
+            <li class="list-group-item">
+                <div class="">
+                    <div class="avatar">
+                        <div>
+                            <img src="/UsersContent/${$value.AuthorId}.jpg"
+                                 alt="${$value.AuthorName}"
+                                 class="img-responsive photo" />
                         </div>
                     </div>
-                    <div class="comment-content">
-                        <div class="comment-author">
-                            ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
-                        </div>
-                        <div class="post">
-                            ${$value.Message}
-                        </div>
+                </div>
+                <div class="comment-content">
+                    <div class="comment-author">
+                        ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
                     </div>
-                    <div class="clearfix"></div>
-                </li>
-                {{/each}}
-            </ul>
+                    <div class="post">
+                        ${$value.Message}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </li>
+            {{/each}}
+        </ul>
         {{/if}}
         <div class="comment">
             <div class="comment-text">

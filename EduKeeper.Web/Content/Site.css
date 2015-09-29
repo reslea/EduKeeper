@@ -251,16 +251,16 @@ td.action {
         font-size: 0.6em;
     }
 
-    .post-content > .author em {
-        font-weight: initial;
-        font-size: 0.8em;
-    }
+.post-content > .author em {
+    font-weight: initial;
+    font-size: 0.8em;
+}
 
-    #posts .post {
-        font-size: 0.5em;
-        min-height: 30px;
-        word-wrap: break-word;
-    }
+#posts .post {
+    font-size: 0.5em;
+    min-height: 30px;
+    word-wrap: break-word;
+}
 
 #post .avatar {
     height: 100%;
@@ -587,10 +587,33 @@ hr {
     }
 
 .post-buttons > input[type=file], .comment-buttons > input[type=file] {
-    display: initial;    
+    display: initial;
     width: 120px;
 }
 
-.comment-buttons > input[type=button]{
+.comment-buttons > input[type=button] {
     margin-right: 7px;
+}
+
+
+
+.file-item {
+    list-style-type: none;
+    display: block; 
+    font-size: 0.5em;
+}
+
+    .file-item a {
+        display: block;
+    }
+
+    .file-item .glyphicon {
+        color: gray;
+        top: 3px;
+        text-decoration: none;
+        font-size: 1.2em;
+    }
+
+.file-name {
+    height: 20px;
 }

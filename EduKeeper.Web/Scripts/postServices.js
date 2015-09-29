@@ -175,3 +175,41 @@ function postComment(id) {
         $("#text" + id).focus();
     });
 }
+
+function canOpenWithGoogle(extention) {
+    googleDocs = [
+    ".doc",
+    ".xls",
+    ".ppt",
+    ".pdf",
+    ".docx",
+    ".xlsx",
+    ".pptx",
+    ".docm",
+    ".xlsm",
+    ".pptm",
+    ".dot",
+    ".xlt",
+    ".pps",
+    ".dotx",
+    ".xltx",
+    ".ppsx",
+    ".dotm",
+    ".xltm",
+    ".ppsm",
+    ".ods",
+    ".html",
+    ".csv",
+    ".pot",
+    ".txt",
+    ".tsv",
+    ".potx",
+    ".rtf",
+    ".txt",
+    ".potm",
+    ".odt",
+    ".tab",
+    ".odp"]
+    var isIn = $.inArray(extention, googleDocs);
+    return isIn > 0;
+}
