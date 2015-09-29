@@ -595,7 +595,9 @@ hr {
     margin-right: 7px;
 }
 
-
+.files-section ul{
+    padding-left: 0;
+}
 
 .file-item {
     list-style-type: none;

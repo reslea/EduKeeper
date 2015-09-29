@@ -131,6 +131,9 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult PostComment(string message, int postId)
         {
+            if (string.IsNullOrWhiteSpace(message))
+                return Json(null, JsonRequestBehavior.AllowGet);
+
             var comment = courseServices.PostComment(message, postId);
 
             return Json(comment, JsonRequestBehavior.AllowGet);

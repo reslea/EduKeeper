@@ -143,7 +143,11 @@ function postMessage() {
         }
     }
 
-    data.append("message", $("#postMessage").val());
+    var message = $("#postMessage").val();
+    if (message.length == 0)
+        return;
+
+    data.append("message", message);
     data.append("courseId", courseId);
 
     var options = {
@@ -153,24 +157,30 @@ function postMessage() {
     }
 
     jQuery.ajax(options).done(function (data) {
-        $("#postsTemplate").tmpl(data).prependTo("#posts");
+        $.get("/Views/Templates/PostsTemplate.html", function (postsTemplate) {
+            $.tmpl(postsTemplate, data.Posts).prependTo("#posts")});
         $("#postMessage").val("");
 
     });
 }
 
 function postComment(id) {
+    var message = $("#text" + id).val();
+    if(message.length == 0)
+        return;
+
     var options = {
         url: '/Study/PostComment',
         type: "post",
         data: {
-            message: $("#text" + id).val(),
+            message: message,
             PostId: id
         }
     }
 
     jQuery.ajax(options).done(function (data) {
-        $("#commentTemplate").tmpl(data).appendTo("#" + id);
+        $.get("/Views/Templates/CommentsTemplate.html", function (commentsTemplate) {
+            $.tmpl(commentsTemplate, reversedComments).appendTo("#" + id)});
         $("#text" + id).val("");
         $("#text" + id).focus();
     });

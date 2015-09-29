@@ -18,7 +18,7 @@
 
         <div class="files-section">
             {{if Files.length != 0}}
-            <ul class="list-group">
+            <ul>
                 {{each Files}}
                 <li class="file-item">
                     <div>
@@ -76,7 +76,7 @@
         {{/if}}
         <div class="comment">
             <div class="comment-text">
-                <textarea id="${createInputId('text', Id)}" class="form-control" />
+                <textarea id="${createInputId('text', Id)}" class="form-control" required />
             </div>
             <div class="comment-buttons">
                 <input type="button" name="postComment" value="Comment" onclick="postComment(${Id})" class="btn btn-default" />
