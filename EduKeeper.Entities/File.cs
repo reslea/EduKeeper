@@ -7,10 +7,8 @@ using System.Text;
 
 namespace EduKeeper.Entities
 {
-    public class File
+    public class File : BaseEntity
     {
-        public int Id { get; set; }
-
         public Guid Identifier { get; set; }
 
         [StringLength(255), Required]

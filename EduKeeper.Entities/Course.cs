@@ -4,15 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduKeeper.Entities
 {
-    public class Course
+    public class Course : BaseEntity
     {
         public Course()
         {
             this.Users = new HashSet<User>();
         }
-
-        [Key] 
-        public int Id { get; set; }
 
         [StringLength(100), Required]
         public string Title { get; set; }

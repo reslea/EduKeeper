@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduKeeper.Entities
 {
-    public class Comment
+    public class Comment : BaseEntity
     {
-        public int Id { get; set; }
-
         public string Message { get; set; }
 
         public int? AuthorId { get; set; }

@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EduKeeper.Entities
 {
-    public class Error
+    public class Error : BaseEntity
     {
-        public int Id { get; set; }
-
         [StringLength(50), Required]
         public string RedirectActionName { get; set; }
 
@@ -16,5 +15,7 @@ namespace EduKeeper.Entities
         public string ErrorActionName { get; set; }
 
         public virtual User User { get; set; }
+
+        public DateTime DateAdded { get; set; }
     }
 }
