@@ -15,6 +15,6 @@ namespace EduKeeper.Infrastructure.DTO
 
         public string Path { get; set; }
 
-        public string Extention {get;set;}
+        public string Extention { get; set; }
     }
 }

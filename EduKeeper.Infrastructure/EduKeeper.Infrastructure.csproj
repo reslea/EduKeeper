@@ -50,7 +50,6 @@
     <Compile Include="ErrorDescriptionAttribute.cs" />
     <Compile Include="IDataAccess.cs" />
     <Compile Include="IErrorUtilities.cs" />
-    <Compile Include="LabelWrapper.cs" />
     <Compile Include="DTO\PostDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

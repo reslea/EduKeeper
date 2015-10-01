@@ -98,7 +98,6 @@ namespace EduKeeper.EntityFramework
 
         public IPagedList<CourseDTO> GetCourses(int userId, string searchTerm, int pageNumber = 1)
         {
-
             using (var context = new EduKeeperContext())
             {
                 IQueryable<Course> courses;
@@ -189,17 +188,14 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public List<LabelWrapper> AutocompleteCourse(string term)
+        public List<string> AutocompleteCourse(string term)
         {
             using (var context = new EduKeeperContext())
             {
                 return context.Courses
                     .Where(c => c.Title.StartsWith(term))
                     .Take(10)
-                    .Select(c => new LabelWrapper
-                    {
-                        label = c.Title
-                    }).ToList();
+                    .Select(c => c.Title).ToList();
             }
         }
 
@@ -259,7 +255,7 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-        public PostDTO PostMessage(string message, int courseId, int userId)
+        public PostDTO AddPost(string message, int courseId, int userId)
         {
             using (var context = new EduKeeperContext())
             {
@@ -355,6 +351,7 @@ namespace EduKeeper.EntityFramework
                     {
                         Id = c.Id,
                         Title = c.Title,
+                        Description = c.Description,
                         IsJoined = true
                     }).ToList();
             }
@@ -370,7 +367,6 @@ namespace EduKeeper.EntityFramework
 
             }
         }
-
 
         public void LogVisitedCourses(List<int> visitedCourses, int userId)
         {
@@ -388,6 +384,8 @@ namespace EduKeeper.EntityFramework
                 user.VisitedCourses = sbCourses.ToString();
                 // 20 mins session lives after unactivity (if it`s not stored in DB)
                 user.LastVisited = DateTime.Now.AddMinutes(-20);
+
+                context.SaveChanges();
             }
         }
 
@@ -408,8 +406,7 @@ namespace EduKeeper.EntityFramework
             }
         }
 
-
-        public void AttachToPost(int postId, List<File> savedFiles)
+        public void AttachFiles(int postId, List<File> savedFiles)
         {
             using (var context = new EduKeeperContext())
             {
@@ -421,7 +418,6 @@ namespace EduKeeper.EntityFramework
                 context.SaveChanges();
             }
         }
-
 
         public FileDTO GetFile(int userId, Guid fileIdentifier)
         {

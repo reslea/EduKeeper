@@ -38,13 +38,13 @@ namespace EduKeeper.Infrastructure
 
         void LeaveCourse(int courseId, int userId);
 
-        List<LabelWrapper> AutocompleteCourse(string term);
+        List<string> AutocompleteCourse(string term);
 
         IPagedList<PostDTO> GetPosts(int userId, int courseId, int pageNumber = 1);
 
         string GetCourseTitle(int courseId);
 
-        PostDTO PostMessage(string message, int courseId, int userId);
+        PostDTO AddPost(string message, int courseId, int userId);
 
         CommentDTO PostComment(string message, int postId, int userId);
 
@@ -58,7 +58,7 @@ namespace EduKeeper.Infrastructure
 
         IPagedList<PostDTO> GetNews(int userId, int pageNumber);
 
-        void AttachToPost(int postId, List<File> savedFiles);
+        void AttachFiles(int postId, List<File> savedFiles);
 
         FileDTO GetFile(int userId, Guid fileIdentifier);
     }

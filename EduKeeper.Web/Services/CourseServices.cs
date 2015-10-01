@@ -54,11 +54,11 @@ namespace EduKeeper.Web.Services
         public PostDTO PostMessage(string message, int courseId, HttpFileCollectionBase files)
         {
             int userId = SessionWrapper.Current.UserId;
-            var createdPost = dataAccess.PostMessage(message, courseId, userId);
+            var createdPost = dataAccess.AddPost(message, courseId, userId);
 
             var savedFiles = FilesToSave(courseId, createdPost, files);
 
-            dataAccess.AttachToPost(createdPost.Id, savedFiles);
+            dataAccess.AttachFiles(createdPost.Id, savedFiles);
 
             createdPost.Files = Mapper.Map<List<FileDTO>>(savedFiles);
 

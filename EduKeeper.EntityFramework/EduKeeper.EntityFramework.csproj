@@ -56,10 +56,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CourseRepository.cs" />
     <Compile Include="DataAccess.cs" />
     <Compile Include="EdukeeperContext.cs" />
+    <Compile Include="Interfaces\ICommentsRepository.cs" />
+    <Compile Include="Interfaces\ICourseRepository.cs" />
+    <Compile Include="Interfaces\IFilesRepository.cs" />
+    <Compile Include="Interfaces\IPostRepository.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
