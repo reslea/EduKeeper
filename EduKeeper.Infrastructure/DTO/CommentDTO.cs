@@ -1,8 +1,7 @@
 ﻿using EduKeeper.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace EduKeeper.Infrastructure.DTO
 {
@@ -10,12 +9,14 @@ namespace EduKeeper.Infrastructure.DTO
     {
         public int Id { get; set; }
 
+        [StringLength(4000, MinimumLength = 1)]
         public string Message { get; set; }
 
         public string AuthorName { get; set; }
 
         public int AuthorId { get; set; }
 
+        [Required]
         public int PostId { get; set; }
 
         public DateTime DateWritten { get; set; }

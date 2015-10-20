@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduKeeper.Entities
 {
     public class Comment : BaseEntity
     {
+        [StringLength(4000), Required]
         public string Message { get; set; }
 
         public int? AuthorId { get; set; }
@@ -17,8 +16,8 @@ namespace EduKeeper.Entities
 
         public virtual Post Post { get; set; }
 
-        public virtual ICollection<File> Files { get; set; }
-
         public DateTime DateWritten { get; set; }
+
+        //public virtual ICollection<File> Files { get; set; }
     }
 }

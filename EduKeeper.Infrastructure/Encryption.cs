@@ -2,19 +2,19 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EduKeeper.Web.Services
+namespace EduKeeper.Infrastructure
 {
-    public class Security
+    public class Encryption
     {
         public static string ComputeSha256(String value)
         {
             StringBuilder sb = new StringBuilder();
 
-            using (SHA256 hash = SHA256Managed.Create())
+            using (SHA256 hash = SHA256.Create())
             {
-                byte[] result = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
+                var result = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
 
-                foreach (byte b in result)
+                foreach (var b in result)
                     sb.Append(b.ToString("x2"));
             }
 

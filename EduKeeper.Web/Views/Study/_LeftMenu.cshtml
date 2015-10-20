@@ -1,12 +1,5 @@
 ﻿@model LeftMenuModel
 
-@{
-    if (Model.User.Id == 0)
-    {
-        return;
-    }
-}
-
 <div class="logo">
 
 </div>
@@ -30,6 +23,9 @@
         </li>
     </ul>
     <div class="clearfix"></div>
+</div>
+<div class="courses-list-head sidebar-brand">
+    <a href="@Url.Action("Courses")">Courses</a>
 </div>
 <ul class="sidebar-nav">
     @foreach (var item in Model.Courses)

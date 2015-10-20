@@ -1,25 +1,26 @@
-﻿using EduKeeper.Web.Services.Interfaces;
-using Ninject;
+﻿using EduKeeper.Infrastructure.ServicesInretfaces;
+using EduKeeper.Web.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+//using System.Net.Mime;
 using System.Web.Mvc;
 
 namespace EduKeeper.Web.Controllers
 {
+    [UserAuthorization] 
     public class FileController : Controller
     {
-        private IFileServices fileServices;
+        protected IFileService FileService { get; set; }
 
-        public FileController(IFileServices fileServices)
+        public FileController(IFileService fileService)
         {
-            this.fileServices = fileServices;
+            FileService = fileService;
         }
 
+        [AllowAnonymous]
         public ActionResult DownloadFile(Guid fileIdentifier)
         {
-            var file = fileServices.GetFile(fileIdentifier);
+            var file = FileService.Get(fileIdentifier);
+
             return File(file.Path, System.Net.Mime.MediaTypeNames.Application.Octet, file.Name);
         }
     }

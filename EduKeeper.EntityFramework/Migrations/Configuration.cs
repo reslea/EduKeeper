@@ -1,18 +1,15 @@
 namespace EduKeeper.EntityFramework.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<EduKeeper.EntityFramework.EduKeeperContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<EduKeeperContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(EduKeeper.EntityFramework.EduKeeperContext context)
+        protected override void Seed(EduKeeperContext context)
         {
             //  This method will be called after migrating to the latest version.
 

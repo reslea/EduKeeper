@@ -11,24 +11,21 @@ namespace EduKeeper.Entities
             this.Users = new HashSet<User>();
         }
 
-        [StringLength(100), Required]
-        public string Title { get; set; }
+        public int? OwnerId { get; set; }
 
         [ForeignKey("OwnerId")]
         public virtual User Owner { get; set; }
 
-        public int? OwnerId { get; set; }
+        [StringLength(100), Required]
+        public string Title { get; set; }
+
+        [StringLength(300), Required]
+        public string Description { get; set; }
 
         public virtual ICollection<Post> Messages { get; set; }
 
         public virtual ICollection<Event> Events { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
-
-        public virtual ICollection<User> MainCourses { get; set; }
-
-        [StringLength(300), Required]
-        public string Description { get; set; }
-
     }
 }

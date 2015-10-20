@@ -1,7 +1,7 @@
-﻿@using EduKeeper.Web.Models;
-@model LoginModel
+﻿@model LoginModel
 
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Login";
 }
 @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "loginForm" }))
@@ -55,3 +55,5 @@
         </table>
     </div>
 }
+
+<a href="@Url.Action("Registration", "Account")">Registration</a>

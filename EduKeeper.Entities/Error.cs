@@ -14,6 +14,8 @@ namespace EduKeeper.Entities
         [StringLength(50)]
         public string ErrorActionName { get; set; }
 
+        public int? UserId { get; set; }
+
         public virtual User User { get; set; }
 
         public DateTime DateAdded { get; set; }

@@ -35,7 +35,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,15 +45,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encryption.cs" />
+    <Compile Include="ErrorUtilities\AccessDeniedException.cs" />
     <Compile Include="DTO\CommentDTO.cs" />
     <Compile Include="DTO\CourseDTO.cs" />
     <Compile Include="DTO\FileDTO.cs" />
-    <Compile Include="ErrorCase.cs" />
-    <Compile Include="ErrorDescriptionAttribute.cs" />
-    <Compile Include="IDataAccess.cs" />
-    <Compile Include="IErrorUtilities.cs" />
+    <Compile Include="ErrorUtilities\ErrorCase.cs" />
+    <Compile Include="ErrorUtilities\ErrorDescriptionAttribute.cs" />
+    <Compile Include="ErrorUtilities\IErrorUtilities.cs" />
     <Compile Include="DTO\PostDTO.cs" />
+    <Compile Include="IUserContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryInterfaces\ICommentRepository.cs" />
+    <Compile Include="RepositoryInterfaces\ICourseRepository.cs" />
+    <Compile Include="RepositoryInterfaces\IFileRepository.cs" />
+    <Compile Include="RepositoryInterfaces\IPostRepository.cs" />
+    <Compile Include="RepositoryInterfaces\IRepository.cs" />
+    <Compile Include="RepositoryInterfaces\IUserRepository.cs" />
+    <Compile Include="ServicesInretfaces\ICommentService.cs" />
+    <Compile Include="ServicesInretfaces\ICourseService.cs" />
+    <Compile Include="ServicesInretfaces\IFileService.cs" />
+    <Compile Include="ServicesInretfaces\IPostService.cs" />
+    <Compile Include="ServicesInretfaces\IUserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EduKeeper.Entities\EduKeeper.Entities.csproj">

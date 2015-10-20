@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace EduKeeper.Infrastructure.DTO
 {
@@ -15,6 +12,6 @@ namespace EduKeeper.Infrastructure.DTO
 
         public string Path { get; set; }
 
-        public string Extention { get; set; }
+        public string Extention { get { return System.IO.Path.GetExtension(Name); } }
     }
 }

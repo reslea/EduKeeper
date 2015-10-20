@@ -1,32 +1,26 @@
-﻿using EduKeeper.EntityFramework;
-using EduKeeper.Infrastructure;
-using EduKeeper.Web.Services.Interfaces;
+﻿using EduKeeper.Infrastructure;
 using Ninject;
 using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace EduKeeper.Web.Services
+namespace EduKeeper.Web.Attributes
 {
-    [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method,
-       Inherited = true, AllowMultiple = true)]
+    [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class UserAuthorizationAttribute : AuthorizeAttribute
     {
         [Inject]
-        public IUserServices UserServices { get; set; }
-
-        [Inject]
-        public IDataAccess DataAccess { get; set; }
+        public IUserContext UserContext { get; set; }
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            if (SessionWrapper.Current.UserId == 0)
+            if (!UserContext.CurrentUserId.HasValue || UserContext.CurrentUserId.Value == 0)
             {
-                var userId = UserServices.GetUserIdFromCookie();
-                
-                if (userId.HasValue)
-                    SessionWrapper.Current.UserId = userId.Value;
+                int userId;
+
+                if (Int32.TryParse(HttpContext.Current.User.Identity.Name, out userId))
+                    UserContext.CurrentUserId = userId;
             }
             base.OnAuthorization(filterContext);
         }

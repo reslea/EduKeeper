@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduKeeper.Entities
 {
@@ -19,12 +18,7 @@ namespace EduKeeper.Entities
         public int? Age { get; set; }
 
         public bool? Sex { get; set; }
-
-        [ForeignKey("GroupId")]
-        public virtual Course Group { get; set; }
-
-        public int? GroupId { get; set; }
-
+        
         public virtual ICollection<Course> OwnedGroups { get; set; }
 
         [StringLength(100), Required]

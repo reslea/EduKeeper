@@ -10,7 +10,9 @@
     </div>
     <div class="comment-content">
         <div class="comment-author">
-            ${AuthorName} <em>${getDate(DateWritten)}</em>
+            ${AuthorName}   {{if DateWritten}}
+                                <em>${getDate(DateWritten)}</em>
+                            {{/if}}
         </div>
         <div class="post">
             ${Message}

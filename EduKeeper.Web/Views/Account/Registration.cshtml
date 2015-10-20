@@ -1,19 +1,10 @@
-﻿@using EduKeeper.Web.Models;
-@model UserModel
+﻿@model UserModel
 
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Registration";
 }
 
-
-
-@*<script>
-        $(document).ready(function() {
-            $("#buttonSubmit").click(function () {
-                $("#registrationForm").submit();
-            });
-        });
-    </script>*@
 @using (Html.BeginForm("Registration", "Account", FormMethod.Post, new { id = "registrationForm" }))
 {
     <div class="table-wrapper">
@@ -73,18 +64,6 @@
                     <div class="model-values">@Html.PasswordFor(u => u.Password, new { @class = "form-control" }) </div>
                 </td>
             </tr>
-            @*<tr>
-                    <td></td>
-                    <td colspan="2">
-                        <div class="validation">@Html.ValidationMessageFor(u => u.Age)</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="info">Age:</td>
-                    <td>
-                        <div class="model-values">@Html.TextBoxFor(u => u.Age, new { @class = "form-control" }) </div>
-                    </td>
-                </tr>*@
             <tfoot>
                 <tr>
                     <td colspan="2" align="center">

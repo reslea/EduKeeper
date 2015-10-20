@@ -7,7 +7,7 @@ namespace EduKeeper.EntityFramework
     {
         static EduKeeperContext()
         {
-            Database.SetInitializer<EduKeeperContext>(new CreateDatabaseIfNotExists<EduKeeperContext>());
+            Database.SetInitializer(new CreateDatabaseIfNotExists<EduKeeperContext>());
         }
         
         public EduKeeperContext()
@@ -32,7 +32,7 @@ namespace EduKeeper.EntityFramework
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
-                .HasMany<Course>(u => u.Courses)
+                .HasMany(u => u.Courses)
                 .WithMany(c => c.Users)
                 .Map(cs =>
                         {
@@ -41,8 +41,8 @@ namespace EduKeeper.EntityFramework
                             cs.ToTable("User_Courses");
                         });
 
-            modelBuilder.Entity<User>().HasOptional(u => u.Group).WithMany(g => g.MainCourses);
             modelBuilder.Entity<Course>().HasOptional(u => u.Owner).WithMany(g => g.OwnedGroups);
+            modelBuilder.Entity<Post>().HasRequired(p => p.Author).WithMany().WillCascadeOnDelete(false);
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Linq;
 using EduKeeper.Entities;
-using EduKeeper.Infrastructure;
 using System.Collections.Generic;
 using PagedList;
 using System.Data.Entity;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using EduKeeper.Infrastructure.DTO;
-using System.Text;
 
 namespace EduKeeper.EntityFramework
 {
-    public class DataAccess : IDataAccess
+    public class DataAccess
     {
         //Too many methods in one class?
         //single responsibility ? 
@@ -53,9 +51,13 @@ namespace EduKeeper.EntityFramework
 
             using (var context = new EduKeeperContext())
             {
-                return context.Users
-                    .SingleOrDefault(u => u.Email == email).Id;
+                var singleOrDefault = context.Users
+                    .SingleOrDefault(u => u.Email == email);
+
+                if (singleOrDefault != null)
+                    return singleOrDefault.Id;
             }
+            return null;
         }
 
         public User GetAuthenticatedUser(int id)
@@ -69,7 +71,7 @@ namespace EduKeeper.EntityFramework
 
         public User UpdateUserData(User user)
         {
-            User result = null;
+            User result;
 
             using (var context = new EduKeeperContext())
             {
@@ -119,7 +121,7 @@ namespace EduKeeper.EntityFramework
                         Id = course.Id,
                         Description = course.Description,
                         Title = course.Title,
-                        IsJoined = course.Users.Any(u => u.Id == userId)
+                        IsUserJoined = course.Users.Any(u => u.Id == userId)
                     })
                     .ToPagedList(pageNumber, 10);
             }
@@ -131,8 +133,7 @@ namespace EduKeeper.EntityFramework
             {
                 User user = context.Users.Single(u => u.Id == ownerId);
 
-                var users = new List<User>();
-                users.Add(user);
+                var users = new List<User> { user };
 
                 var course = context.Courses.Create();
                 course.OwnerId = ownerId;
@@ -241,9 +242,9 @@ namespace EduKeeper.EntityFramework
 
 
                     if (item.Count() == 11)
-                        post.IsHasMore = true;
+                        post.IsHasMoreComments = true;
                 }
-                return  posts;
+                return posts;
             }
         }
 
@@ -281,19 +282,21 @@ namespace EduKeeper.EntityFramework
         {
             using (var context = new EduKeeperContext())
             {
-                var comment = context.Comments.Create();
-
-                comment.Message = message;
-                comment.AuthorId = userId;
-                comment.PostId = postId;
-                comment.DateWritten = DateTime.Now;
-
-                if (context.Posts.Any(p => p.Id == postId
-                    && p.Course.Users.Any(u => u.Id == userId)))
+                var comment = new Comment
                 {
-                    context.Comments.Add(comment);
-                    context.SaveChanges();
-                }
+                    Message = message,
+                    AuthorId = userId,
+                    PostId = postId,
+                    DateWritten = DateTime.Now
+                };
+
+
+                if (!context.Posts.Any(p => p.Id == postId
+                                            && p.Course.Users.Any(u => u.Id == userId)))
+                    return Mapper.Map<CommentDTO>(comment);
+                context.Entry(comment).State = EntityState.Added;
+                context.Comments.Add(comment);
+                context.SaveChanges();
 
                 return Mapper.Map<CommentDTO>(comment);
             }
@@ -313,7 +316,7 @@ namespace EduKeeper.EntityFramework
                     .OrderByDescending(post => post.Id)
                     .Select(post => new PostDTO()
                     {
-                        AuthorId = post.AuthorId.Value,
+                        AuthorId = post.AuthorId,
                         AuthorName = post.Author.FirstName + " " + post.Author.LastName,
                         CourseId = post.CourseId,
                         Id = post.Id,
@@ -352,7 +355,7 @@ namespace EduKeeper.EntityFramework
                         Id = c.Id,
                         Title = c.Title,
                         Description = c.Description,
-                        IsJoined = true
+                        IsUserJoined = true
                     }).ToList();
             }
         }
@@ -365,27 +368,6 @@ namespace EduKeeper.EntityFramework
                     .Any(u => u.Id == userId &&
                         u.Courses.Any(c => c.Id == courseId));
 
-            }
-        }
-
-        public void LogVisitedCourses(List<int> visitedCourses, int userId)
-        {
-            var sbCourses = new StringBuilder();
-            foreach (int courseId in visitedCourses)
-            {
-                sbCourses.Append('#');
-                sbCourses.Append(courseId);
-            }
-
-            using (var context = new EduKeeperContext())
-            {
-                var user = context.Users.Single(u => u.Id == userId);
-
-                user.VisitedCourses = sbCourses.ToString();
-                // 20 mins session lives after unactivity (if it`s not stored in DB)
-                user.LastVisited = DateTime.Now.AddMinutes(-20);
-
-                context.SaveChanges();
             }
         }
 

@@ -1,59 +1,63 @@
 ﻿using EduKeeper.Entities;
-using EduKeeper.EntityFramework.Interfaces;
-using PagedList;
-using System;
+using EduKeeper.Infrastructure.RepositoryInterfaces;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace EduKeeper.EntityFramework
 {
     public abstract class Repository<T> : IRepository<T> where T : BaseEntity
-    {
-        public int DefaultPageSize = 10;
-        protected EduKeeperContext _entities;
-        protected readonly IDbSet<T> _dbset;
+    {        
+        protected EduKeeperContext Entities { get; private set; }
 
-        public Repository(EduKeeperContext context)
+        protected IDbSet<T> DbSet { get; private set; }
+
+        protected Repository(EduKeeperContext context)
         {
-            _entities = context;
-            _dbset = context.Set<T>();
+            Entities = context;
+            DbSet = context.Set<T>();
         }
 
-        public virtual IPagedList<T> GetPage(int pageNumber = 1)
+        public IQueryable<T> Find()
         {
-            return _dbset.ToPagedList(1, DefaultPageSize);
-        }
-
-        public virtual IPagedList<T> FindBy(Expression<Func<T, bool>> predicate, int pageNumber = 1)
-        {
-            return _dbset.Where(predicate).ToPagedList(1, 10);
+            return DbSet.AsQueryable();
         }
 
         public virtual T Add(T entity)
         {
-            return _dbset.Add(entity);
+            Entities.Entry(entity).State = EntityState.Added;
+
+            return DbSet.Add(entity);
         }
 
         public virtual T Get(int id)
         {
-            return _dbset.SingleOrDefault(entity => entity.Id == id);
+            return DbSet.SingleOrDefault(entity => entity.Id == id);
         }
 
         public virtual T Edit(T entity)
         {
-            _entities.Entry(entity).State = EntityState.Modified;
+            if (Entities.Entry(entity).State == EntityState.Detached)
+                Entities.Entry(entity).State = EntityState.Modified;
+
             return entity;
         }
 
         public virtual void Remove(int id)
         {
-            _dbset.Remove(_dbset.Where(entity => entity.Id == id).First());
+            var entity = DbSet.First(e => e.Id == id);
+            DbSet.Remove(entity);
+
+            Entities.Entry(entity).State = EntityState.Deleted;
         }
 
         public virtual void Save()
         {
-            _entities.SaveChanges();
+            Entities.SaveChanges();
+        }
+
+        public T CreateEntity()
+        {
+            return DbSet.Create();
         }
     }
 }

@@ -1,7 +1,6 @@
-﻿@using EduKeeper.Web.Models;
-@using System.Web.Mvc;
-@model UserModel
+﻿@model UpdateUserModel
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "EditProfile";
 }
 @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { id = "editForm", enctype = "multipart/form-data" }))
@@ -14,11 +13,13 @@
                 <tr>
                     <th colspan="2">
                         <h1>Edit Profile</h1>
+                        <div>
+                            @Html.HiddenFor(u => u.Id)
+                        </div> 
                     </th>
                 </tr>
-            </thead>
-
-            @*Field 1*@
+            </thead>           
+            @*First name*@
             <tr>
                 <td></td>
                 <td>
@@ -30,7 +31,7 @@
                 <td>
                     <div class="model-values">@Html.TextBoxFor(u => u.FirstName, new { @class = "form-control" })</div>
                 </td>
-                <td rowspan="60" class="avatar">
+                <td rowspan="6" class="avatar">
                     <div class="picture">
 
                         <img src="@(Model.Id != 0 ? Url.Content("~/UsersContent/" + Model.Id.ToString()) + ".jpg"
@@ -44,7 +45,7 @@
                 </td>
             </tr>
 
-            @*Field 2*@
+            @*Last name*@
             <tr>
                 <td></td>
                 <td>
@@ -58,21 +59,7 @@
                 </td>
             </tr>
 
-            @*Field 3*@
-            <tr>
-                <td></td>
-                <td>
-                    <div class="validation">@Html.ValidationMessageFor(u => u.Email)</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="info">Email:</td>
-                <td>
-                    <div class="model-values">@Html.TextBoxFor(u => u.Email, new { @class = "form-control" })</div>
-                </td>
-            </tr>
-
-            @*Field 4*@
+            @*Age*@
             <tr>
                 <td></td>
                 <td>
@@ -86,24 +73,7 @@
                 </td>
             </tr>
 
-            @*Field 5*@
-            <tr>
-                <td></td>
-                <td>
-                    <div class="validation">@Html.ValidationMessageFor(u => u.GroupId)</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="info">Group:</td>
-                <td>
-                    <div class="model-values">
-                        @(Html.DropDownListFor(u => u.GroupId, new List<SelectListItem>()
-                        {
-                            new SelectListItem() { Text = "My great group", Value = "1"}
-                        }, new { @class = "form-control" }))
-                    </div>
-                </td>
-            </tr>
+            @*Sex*@
             <tr>
                 <td></td>
                 <td>
@@ -112,7 +82,7 @@
             </tr>
             <tr>
             <tr>
-                <td></td>
+                <td class="info">Sex:</td>
                 <td>
                     <div class="validation">
                         @(Html.DropDownListFor(u => u.Sex, new List<SelectListItem>()

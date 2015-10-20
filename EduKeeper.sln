@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduKeeper.Infrastructure", "EduKeeper.Infrastructure\EduKeeper.Infrastructure.csproj", "{D481C5FD-DB30-4DE6-BC94-F0A19A458D93}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduKeeper.Web", "EduKeeper.Web\EduKeeper.Web.csproj", "{FF48F03F-99B1-42D2-B30F-3D37CC9EFABD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5EAAEF81-63FA-45E9-A216-8EC8B2273594} = {5EAAEF81-63FA-45E9-A216-8EC8B2273594}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduKeeper.Services", "EduKeeper.Services\EduKeeper.Services.csproj", "{5EAAEF81-63FA-45E9-A216-8EC8B2273594}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{FF48F03F-99B1-42D2-B30F-3D37CC9EFABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF48F03F-99B1-42D2-B30F-3D37CC9EFABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF48F03F-99B1-42D2-B30F-3D37CC9EFABD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EAAEF81-63FA-45E9-A216-8EC8B2273594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EAAEF81-63FA-45E9-A216-8EC8B2273594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EAAEF81-63FA-45E9-A216-8EC8B2273594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EAAEF81-63FA-45E9-A216-8EC8B2273594}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

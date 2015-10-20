@@ -1,5 +1,5 @@
 ﻿
-namespace EduKeeper.Infrastructure
+namespace EduKeeper.Infrastructure.ErrorUtilities
 {
     public enum ErrorCase
     {
@@ -18,5 +18,8 @@ namespace EduKeeper.Infrastructure
 
         [ErrorDescriptionAttribute("Course doesn`t exist")]
         CourseNotExist,
+
+        [ErrorDescriptionAttribute("Ops, we have some errors here, please try again later")]
+        UndefilenError,
     }
 }

@@ -11,14 +11,18 @@ namespace EduKeeper.Web.App_Start
     using Ninject;
     using Ninject.Web.Common;
     using System.Reflection;
-    using EduKeeper.Web.Services.Interfaces;
-    using EduKeeper.Web.Services;
-    using EduKeeper.Infrastructure;
-    using EduKeeper.EntityFramework;
+    using Services;
+    using Infrastructure;
+    using EntityFramework;
+    using EduKeeper.Services;
+    using Infrastructure.ErrorUtilities;
+    using Infrastructure.RepositoryInterfaces;
+    using EntityFramework.Repositories;
+    using Infrastructure.ServicesInretfaces;
 
     public static class NinjectWebCommon 
     {
-        private static readonly Bootstrapper bootstrapper = new Bootstrapper();
+        private static readonly Bootstrapper Bootstrapper = new Bootstrapper();
 
         /// <summary>
         /// Starts the application
@@ -27,7 +31,7 @@ namespace EduKeeper.Web.App_Start
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
-            bootstrapper.Initialize(CreateKernel);
+            Bootstrapper.Initialize(CreateKernel);
         }
         
         /// <summary>
@@ -35,7 +39,7 @@ namespace EduKeeper.Web.App_Start
         /// </summary>
         public static void Stop()
         {
-            bootstrapper.ShutDown();
+            Bootstrapper.ShutDown();
         }
         
         /// <summary>
@@ -67,12 +71,26 @@ namespace EduKeeper.Web.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Load(Assembly.GetExecutingAssembly());
+
+            kernel.Bind<EduKeeperContext>().ToSelf().InRequestScope();
+            
+            kernel.Bind<IUserContext>().To<UserContext>();
+
             kernel.Bind<IErrorUtilities>().To<ErrorUtilities>();
-            kernel.Bind<IUserServices>().To<UserServices>();
-            kernel.Bind<ISessionWrapper>().To<SessionWrapper>();
-            kernel.Bind<IDataAccess>().To<DataAccess>();
-            kernel.Bind<ICourseServices>().To<CourseServices>();
-            kernel.Bind<IFileServices>().To<FileServices>();
+
+            //repositories
+            kernel.Bind<ICommentRepository>().To<CommentRepository>();
+            kernel.Bind<ICourseRepository>().To<CourseRepository>();
+            kernel.Bind<IFileRepository>().To<FileRepository>();
+            kernel.Bind<IPostRepository>().To<PostRepository>();
+            kernel.Bind<IUserRepository>().To<UserRepository>();
+
+            //entity services
+            kernel.Bind<ICommentService>().To<CommentService>();
+            kernel.Bind<ICourseService>().To<CourseService>();
+            kernel.Bind<IFileService>().To<FileService>();
+            kernel.Bind<IPostService>().To<PostService>();
+            kernel.Bind<IUserService>().To<UserService>();
         }        
     }
 }

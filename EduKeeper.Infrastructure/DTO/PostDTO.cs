@@ -1,8 +1,6 @@
-﻿using EduKeeper.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace EduKeeper.Infrastructure.DTO
 {
@@ -14,11 +12,13 @@ namespace EduKeeper.Infrastructure.DTO
 
         public int AuthorId { get; set; }
 
+        [Required]
         public int CourseId { get; set; }
 
+        [StringLength(4000, MinimumLength=1)]
         public string Message { get; set; }
 
-        public bool IsHasMore { get; set; }
+        public bool IsHasMoreComments { get; set; }
 
         public DateTime DateWritten { get; set; }
 

@@ -1,11 +1,11 @@
-﻿using EduKeeper.Infrastructure;
+﻿using AutoMapper;
+using EduKeeper.Infrastructure;
 using EduKeeper.Infrastructure.DTO;
+using EduKeeper.Infrastructure.ErrorUtilities;
+using EduKeeper.Infrastructure.ServicesInretfaces;
+using EduKeeper.Web.Attributes;
 using EduKeeper.Web.Models;
-using EduKeeper.Web.Services;
-using EduKeeper.Web.Services.Interfaces;
 using System;
-using System.IO;
-using System.Web;
 using System.Web.Mvc;
 
 namespace EduKeeper.Web.Controllers
@@ -13,20 +13,36 @@ namespace EduKeeper.Web.Controllers
     [UserAuthorization]
     public class StudyController : Controller
     {
-        private ICourseServices courseServices;
-        private IDataAccess dataAccess;
+        protected IUserContext UserContext { get; set; }
 
-        public StudyController(ICourseServices courseServices, IDataAccess dataAccess)
+        protected ICommentService CommentService { get;set; }
+
+        protected ICourseService CourseService { get;set; } 
+
+        protected IFileService FileService { get;set; }
+
+        protected IPostService PostService { get;set; }
+
+        protected IUserService UserService { get; set; }
+        
+        public StudyController( IUserContext userContext,
+                                ICommentService commentService,
+                                ICourseService courseServices, 
+                                IFileService fileService,
+                                IPostService postService,
+                                IUserService userService)        
         {
-            this.courseServices = courseServices;
-            this.dataAccess = dataAccess;
+            UserContext = userContext;
+            CommentService = commentService;
+            CourseService = courseServices;
+            FileService = fileService;
+            PostService = postService;
+            UserService = userService;
         }
 
         public ActionResult Courses(string searchTerm, int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.UserId;
-
-            var courses = dataAccess.GetCourses(userId, searchTerm, pageNumber);
+            var courses = CourseService.GetCourses(searchTerm, pageNumber);
 
             if (Request.IsAjaxRequest())
             {
@@ -42,30 +58,28 @@ namespace EduKeeper.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddCourse(CourseModel model)
+        public ActionResult AddCourse(CourseDTO newCourse)
         {
             if (!ModelState.IsValid)
                 return View();
-            else
-            {
-                courseServices.AddCourse(model);
-                return RedirectToAction("Course", new {courseId = model.Id});
-            }
+            
+            string title = newCourse.Title;
+            string description = newCourse.Description;
+            
+            var course =CourseService.Add(title, description);
+            return RedirectToAction("Course", new { courseId = course.Id });
         }
 
         public JsonResult AutocompleteCourse(string term)
         {
-            var model = dataAccess.AutocompleteCourse(term);
+            var model = CourseService.Autocomplete(term);
 
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetPosts(int courseId, int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.UserId;
-            string courseTitle = dataAccess.GetCourseTitle(courseId);
-
-            var posts = dataAccess.GetPosts(userId, courseId, pageNumber);
+            var posts = PostService.GetLatestForCourse(courseId, pageNumber);
 
             if (posts == null)
                 return null;
@@ -81,84 +95,94 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult Course(int courseId)
         {
-            int userId = SessionWrapper.Current.UserId;
+            var course = CourseService.Get(courseId);
 
-            var model = courseServices.GetCourse(courseId);
-            if (model == null)
+            if (course == null)
                 return RedirectToAction("Error", "Account", new { ErrorCase.CourseNotExist });
 
-            model.IsUserJoined = dataAccess.IsPartisipant(userId, courseId);
-            
-            SessionWrapper.Current.VisitedCourses.Add(courseId);
-
-            return View(model);
+            return View(course);
         }
 
         public ActionResult JoinCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.UserId;
+            CourseService.Join(courseId);
 
-            courseServices.JoinCourse(courseId);
             return View();
         }
 
         public ActionResult LeaveCourse(int courseId)
         {
-            int userId = SessionWrapper.Current.UserId;
+            CourseService.Leave(courseId);
 
-            courseServices.LeaveCourse(courseId);
             return View();
         }
 
         [HttpPost]
-        public ActionResult PostMessage(string message, int courseId)
+        public ActionResult PostMessage(PostDTO post)
         {
-            if (string.IsNullOrWhiteSpace(message))
-                return Json(null, JsonRequestBehavior.AllowGet);
+            if (!ModelState.IsValid)
+                return Json(null);
 
-            PostDTO post = null;
+            PostDTO addedPost;
             try
             {
-                post = courseServices.PostMessage(message, courseId, Request.Files);
+                addedPost = PostService.Add(post.CourseId, post.Message);
+
+                if (addedPost != null && Request.Files.Count > 0)
+                {
+                    FileService.Attach(addedPost.Id, addedPost.CourseId, Request.Files);
+                    addedPost = PostService.Get(addedPost.Id);
+                }
+
             }
             catch (AccessViolationException)
             {
                 return RedirectToAction("Error", "Account", new { ErrorCase.UnauthorizedAccess });
             }
 
-            return Json(post, JsonRequestBehavior.AllowGet);
+            return Json(addedPost);
         }
 
-        public ActionResult PostComment(string message, int postId)
+        [HttpPost]
+        public ActionResult PostComment(CommentDTO comment)
         {
-            if (string.IsNullOrWhiteSpace(message))
-                return Json(null, JsonRequestBehavior.AllowGet);
+            if (!ModelState.IsValid)
+                return Json(null);
 
-            var comment = courseServices.PostComment(message, postId);
+            var dto = CommentService.Add(comment.PostId, comment.Message);
 
-            return Json(comment, JsonRequestBehavior.AllowGet);
+            return Json(dto);
         }
 
         public PartialViewResult ViewLeftMenu()
         {
-            var model = courseServices.GetLeftMenu();
+            var userId = UserContext.CurrentUserId.Value;
+
+            var joinedCourses = CourseService.GetJoinedForUser(userId);
+
+            var user = UserService.GetAuthentificated(userId);
+
+            var model = new LeftMenuModel()
+            {
+                User = Mapper.Map<UserModel>(user),
+                Courses = joinedCourses
+            };
 
             return PartialView("_LeftMenu", model);
         }
 
         public JsonResult GetCourses()
         {
-            int userId = SessionWrapper.Current.UserId;
-            var courses = dataAccess.GetJoinedCourses(userId);
+            int userId = UserContext.CurrentUserId.Value;
+
+            var courses = CourseService.GetJoinedForUser(userId);
 
             return Json(courses, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetComments(int postId, int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.UserId;
-
-            var comments = dataAccess.GetComments(userId, postId, pageNumber);
+            var comments = CommentService.GetPage(postId, pageNumber);
 
             if (comments == null)
                 return null;
@@ -179,8 +203,8 @@ namespace EduKeeper.Web.Controllers
 
         public ActionResult GetNews(int pageNumber = 1)
         {
-            int userId = SessionWrapper.Current.UserId;
-            var model = dataAccess.GetNews(userId, pageNumber);
+            var model = PostService.GetLatestForJoinedCourses(pageNumber);
+
             return Json(model, JsonRequestBehavior.AllowGet);
         }
     }

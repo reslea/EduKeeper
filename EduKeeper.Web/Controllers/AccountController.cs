@@ -1,8 +1,10 @@
-﻿using System;
+﻿using AutoMapper;
+using EduKeeper.Entities;
 using EduKeeper.Infrastructure;
+using EduKeeper.Infrastructure.ErrorUtilities;
+using EduKeeper.Infrastructure.ServicesInretfaces;
+using EduKeeper.Web.Attributes;
 using EduKeeper.Web.Models;
-using EduKeeper.Web.Services;
-using EduKeeper.Web.Services.Interfaces;
 using System.Web.Mvc;
 
 namespace EduKeeper.Web.Controllers
@@ -10,13 +12,23 @@ namespace EduKeeper.Web.Controllers
     [UserAuthorization] 
     public class AccountController : Controller
     {
-        private IUserServices userServices;
-        private IErrorUtilities errorUtilities;
+        protected IErrorUtilities ErrorUtilities { get; set; }
 
-        public AccountController(IUserServices userServices, IErrorUtilities errorUtilities)
+        protected IUserContext UserContext { get; set; }   
+     
+        protected IUserService UserService { get; set; }
+
+        protected IFileService FileService { get; set; }
+
+        public AccountController(   IErrorUtilities errorUtilities,
+                                    IUserContext userContext,
+                                    IUserService userService,
+                                    IFileService fileService)
         {
-            this.userServices = userServices;
-            this.errorUtilities = errorUtilities;
+            ErrorUtilities = errorUtilities;
+            UserContext = userContext;
+            UserService = userService;
+            FileService = fileService;
         }
 
         public ActionResult Index()
@@ -25,25 +37,25 @@ namespace EduKeeper.Web.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Registration()
+        public ActionResult Registration(string email = null)
         {
             return View();
         }
 
-        [AllowAnonymous]
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Registration(UserModel model)
         {
-            model.Password = Security.ComputeSha256(model.Password);
-
             if (!ModelState.IsValid)
                 return View();
 
-            if (!userServices.Registrate(model))                
+            var convertedUser = Mapper.Map<User>(model);
+
+            if (!UserService.RegistrateUser(convertedUser))
                 return RedirectToAction("Error", "Account", new { errorCase = ErrorCase.DuplicateEmail });
-                
-            SessionWrapper.Current.UserId = model.Id;
-            userServices.AddAuthCookieToResponse(model);
+
+            UserContext.CurrentUserId = convertedUser.Id;
+            
             return RedirectToAction("Courses", "Study");
         }
 
@@ -53,43 +65,55 @@ namespace EduKeeper.Web.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Login(LoginModel model)
         {
             if (!ModelState.IsValid)
                 return View();
 
-            var user = userServices.SignIn(model);
+            var user = UserService.Authentificate(model.Email, model.Password);
 
             if (user == null)
                 return RedirectToAction("Error", new { errorCase = ErrorCase.InvalidUserData });
 
-            SessionWrapper.Current.UserId = user.Id;
-            userServices.AddAuthCookieToResponse(model);
             return RedirectToAction("Courses", "Study");
         }
 
         public ActionResult EditProfile()
         {
-            var user = userServices.GetAuthentificatedUser();
-            return View(user);
+            int userId = UserContext.CurrentUserId.Value;
+            var user = UserService.GetAuthentificated(userId);
+
+            var userModel = Mapper.Map<UpdateUserModel>(user);
+            
+            return View(userModel);
         }
 
         [HttpPost]
-        public ActionResult EditProfile(UserModel model)
+        public ActionResult EditProfile(UpdateUserModel model)
         {
-            var updatedUser = userServices.UpdateUser(model);
-            SessionWrapper.Current.UserId = updatedUser.Id;
-            
-            return View(updatedUser);
+            if (!ModelState.IsValid)
+                return View();
+
+            var convertedUser = Mapper.Map<User>(model);
+
+            var  updatedUser = UserService.Update(convertedUser);
+
+            if (model.PictureToUpdate != null)
+                FileService.UpdateAvatar(model.Id, model.PictureToUpdate);
+
+            var updatedUserModel = Mapper.Map<UpdateUserModel>(updatedUser);
+
+            return View(updatedUserModel);
         }
                 
         [AllowAnonymous]
         public ActionResult Error(ErrorCase errorCase = ErrorCase.UserNotFound)
         {
-            var error = errorUtilities.LogError(errorCase);
+            var error = ErrorUtilities.LogError(errorCase);
 
+            Response.StatusCode = 500;
             return View(error);
         }
     }

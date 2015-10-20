@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EduKeeper.Infrastructure
+namespace EduKeeper.Infrastructure.ErrorUtilities
 {
     public class ErrorDescriptionAttribute : Attribute
     {

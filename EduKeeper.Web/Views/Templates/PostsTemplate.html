@@ -8,7 +8,9 @@
     </div>
     <div class="post-content">
         <div class="author">
-            ${AuthorName} <em>at ${getDate(DateWritten)}</em>
+            ${AuthorName}   {{if DateWritten}}
+                                <em>${getDate(DateWritten)}</em>
+                            {{/if}}
         </div>
         <div class="post">
             ${Message}
@@ -17,7 +19,7 @@
         <div class="clearfix"></div>
 
         <div class="files-section">
-            {{if Files.length != 0}}
+            {{if Files}}
             <ul>
                 {{each Files}}
                 <li class="file-item">
@@ -32,6 +34,7 @@
                             </a>
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                 </li>
                 {{/each}}
             </ul>
@@ -39,7 +42,7 @@
         </div>
     </div>
 
-    <div class="clearfix" />
+    <div class="clearfix"></div>
 
     <div class="comment-section">
         {{if IsHasMore}}
@@ -48,7 +51,7 @@
             <img src="/UsersContent/loading.gif" alt="loading..." />
         </div>
         {{/if IsHasMore}}
-        {{if Comments != null}}
+        {{if Comments}}
         <ul class="list-group comments" id=${Id}>
             {{each Comments}}
             <li class="list-group-item">
@@ -63,7 +66,9 @@
                 </div>
                 <div class="comment-content">
                     <div class="comment-author">
-                        ${$value.AuthorName} <em>at ${getDate($value.DateWritten)}</em>
+                        ${$value.AuthorName}    {{if DateWritten}}
+                                                    <em>${getDate(DateWritten)}</em>
+                                                {{/if}}
                     </div>
                     <div class="post">
                         ${$value.Message}
@@ -76,14 +81,13 @@
         {{/if}}
         <div class="comment">
             <div class="comment-text">
-                <textarea id="${createInputId('text', Id)}" class="form-control" required />
+                <textarea id="${createInputId('text', Id)}" class="form-control" required></textarea>
             </div>
             <div class="comment-buttons">
                 <input type="button" name="postComment" value="Comment" onclick="postComment(${Id})" class="btn btn-default" />
-                <input type="file" name="uploadFile" value="File upload" class="btn btn-default" multiple onchange="uploadFile(${Id}, this.files)" />
             </div>
         </div>
     </div>
 
-    <div class="clearfix" />
+    <div class="clearfix"></div>
 </li>

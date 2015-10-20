@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace EduKeeper.Web
 {
@@ -9,9 +8,11 @@ namespace EduKeeper.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/site").Include(
-                "~/Scripts/site.js",
-                "~/Scripts/postServices.js"));
+                "~/Scripts/App/site.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/postServices").Include(
+                "~/Scripts/App/postServices.js")); 
+            
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/jquery.tmpl.js",
@@ -33,7 +34,7 @@ namespace EduKeeper.Web
                         "~/Content/bootstrap.css",
                         "~/Content/bootstrap-theme.css"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/App/site.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",

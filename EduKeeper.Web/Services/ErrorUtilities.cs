@@ -1,9 +1,9 @@
 ﻿using EduKeeper.Entities;
 using EduKeeper.Infrastructure;
+using EduKeeper.Infrastructure.ErrorUtilities;
 using Ninject;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Web;
 
 namespace EduKeeper.Web.Services
@@ -12,19 +12,19 @@ namespace EduKeeper.Web.Services
     public class ErrorUtilities : IErrorUtilities
     {
         [Inject]
-        public IDataAccess DataAccess { get; set; }
+        public IUserContext UserContext { get; set; }
 
         public string GetErrorDescriptionFromAttribute(ErrorCase errorCase)
         {
-            MemberInfo memberInfo = typeof(ErrorCase).
+            var memberInfo = typeof(ErrorCase).
                 GetMember(errorCase.ToString()).FirstOrDefault();
 
             if (memberInfo != null)
             {
-                ErrorDescriptionAttribute attribute = (ErrorDescriptionAttribute)memberInfo.
+                var attribute = (ErrorDescriptionAttribute)memberInfo.
                     GetCustomAttributes(typeof(ErrorDescriptionAttribute), false).FirstOrDefault();
 
-                return attribute.Text;
+                if (attribute != null) return attribute.Text;
             }
 
             return null;
@@ -34,41 +34,46 @@ namespace EduKeeper.Web.Services
         {
             switch (errorCase)
             {
-                case ErrorCase.UserNotFound: 
-                    return "/Registration";
-                case ErrorCase.InvalidUserData:  
-                    return "/Login";
-                case ErrorCase.DuplicateEmail: 
-                    return "/Registration";
+                case ErrorCase.UserNotFound:
+                    return "/Account/Login";
+                case ErrorCase.InvalidUserData:
+                    return "/Account/Login";
+                case ErrorCase.DuplicateEmail:
+                    return "/Account/Registration";
                 case ErrorCase.UnauthorizedAccess:
-                    return "/Login";
-                default: 
-                    return "/Registration";
+                    return "/Account/Login";
+                case ErrorCase.CourseNotExist:
+                    return "/Study/Courses";
+                case ErrorCase.UndefilenError:
+                    return "/Account/Login";
+                default:
+                    return "/Account/Login";
             }
         }
 
         public Error GetError(ErrorCase errorCase)
         {
-            string errorAction = HttpContext.Current.Request.UrlReferrer != null ? 
-                HttpContext.Current.Request.UrlReferrer.AbsolutePath.ToString() : String.Empty;
+            var errorAction = HttpContext.Current.Request.UrlReferrer != null ? 
+                HttpContext.Current.Request.UrlReferrer.AbsolutePath : string.Empty;
 
-            string errorDescription = GetErrorDescriptionFromAttribute(errorCase);
-            string errorPageToRedirect = GetRedirectionPage(errorCase);
+            var errorDescription = GetErrorDescriptionFromAttribute(errorCase);
+            var errorPageToRedirect = GetRedirectionPage(errorCase);
             
             
             return  new Error()
             {
+                DateAdded = DateTime.Now,
                 ErrorDescription = errorDescription,
                 RedirectActionName = errorPageToRedirect,
                 ErrorActionName = errorAction,
-                //UserId = (SessionWrapper.Current.User != null ? SessionWrapper.Current.User.Id : 0)
+                UserId = UserContext.CurrentUserId
             };
         }
 
         public Error LogError(ErrorCase errorCase)
         {
             var error = GetError(errorCase);
-            DataAccess.LogError(error);
+            //DataAccess.LogError(error);
             return error;
         }
     }

@@ -162,31 +162,23 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CourseModel.cs" />
     <Compile Include="Models\LeftMenuModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\PostCollectionModel.cs" />
+    <Compile Include="Models\UpdateUserModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\CourseServices.cs" />
     <Compile Include="Services\ErrorUtilities.cs" />
-    <Compile Include="Services\FileServices.cs" />
-    <Compile Include="Services\Interfaces\IFileServices.cs" />
-    <Compile Include="Services\Interfaces\ICourseServices.cs" />
-    <Compile Include="Services\Interfaces\ISessionWrapper.cs" />
-    <Compile Include="Services\Interfaces\IUserServices.cs" />
-    <Compile Include="Services\Security.cs" />
-    <Compile Include="Services\UserAuthorizationAttribute.cs" />
-    <Compile Include="Services\UserServices.cs" />
-    <Compile Include="Services\SessionWrapper.cs" />
+    <Compile Include="Attributes\UserAuthorizationAttribute.cs" />
+    <Compile Include="Services\UserContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="UsersContent\loading.gif" />
     <Content Include="Content\PagedList.css" />
-    <Content Include="Scripts\postServices.js" />
+    <Content Include="Scripts\App\postServices.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\jquery.tmpl.min.js" />
-    <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\App\site.js" />
     <Content Include="UsersContent\index.gif" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -247,7 +239,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\App\Site.css" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Scripts\bootstrap.js" />
@@ -294,6 +286,8 @@
     <Content Include="Views\Study\JoinCourse.cshtml" />
     <Content Include="Views\Study\_LeftMenu.cshtml" />
     <Content Include="Views\Study\News.cshtml" />
+    <Content Include="Views\Study\LeaveCourse.cshtml" />
+    <Content Include="Views\Shared\_AccountLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -314,6 +308,10 @@
     <ProjectReference Include="..\EduKeeper.Infrastructure\EduKeeper.Infrastructure.csproj">
       <Project>{d481c5fd-db30-4de6-bc94-f0a19a458d93}</Project>
       <Name>EduKeeper.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EduKeeper.Services\EduKeeper.Services.csproj">
+      <Project>{5eaaef81-63fa-45e9-a216-8ec8b2273594}</Project>
+      <Name>EduKeeper.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

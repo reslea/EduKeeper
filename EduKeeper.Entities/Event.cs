@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EduKeeper.Entities
 {
+    //Unused entity, created for future updates
     public class Event : BaseEntity
     {
         [StringLength(50), Required]

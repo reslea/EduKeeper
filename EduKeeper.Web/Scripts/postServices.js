@@ -180,7 +180,8 @@ function postComment(id) {
 
     jQuery.ajax(options).done(function (data) {
         $.get("/Views/Templates/CommentsTemplate.html", function (commentsTemplate) {
-            $.tmpl(commentsTemplate, reversedComments).appendTo("#" + id)});
+            $.tmpl(commentsTemplate, data).appendTo("#" + id)
+        });
         $("#text" + id).val("");
         $("#text" + id).focus();
     });

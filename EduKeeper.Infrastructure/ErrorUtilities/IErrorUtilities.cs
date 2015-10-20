@@ -1,6 +1,6 @@
-﻿
-using EduKeeper.Entities;
-namespace EduKeeper.Infrastructure
+﻿using EduKeeper.Entities;
+
+namespace EduKeeper.Infrastructure.ErrorUtilities
 {
 
     public interface IErrorUtilities
