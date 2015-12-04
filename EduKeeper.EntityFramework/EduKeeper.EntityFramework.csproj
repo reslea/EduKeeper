@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="Repositories\CommentRepository.cs" />
     <Compile Include="Repositories\CourseRepository.cs" />
-    <Compile Include="DataAccess.cs" />
     <Compile Include="EdukeeperContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
